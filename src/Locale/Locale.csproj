@@ -14,7 +14,7 @@
     <!-- Package and build properties -->
     <PropertyGroup>
         <ApplicationIcon>Resources\Locale.ico</ApplicationIcon>
-        <Version>0.0.8</Version>
+        <Version>0.0.9</Version>
         <AssemblyVersion>$(Version)</AssemblyVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Title>Locale</Title>
