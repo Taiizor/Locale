@@ -1,0 +1,114 @@
+name: 🌐 New Translation Provider Request
+description: Request support for a new translation API or AI provider
+title: "[Provider]: "
+labels: ["enhancement", "new-provider", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new translation provider! Please provide details about the provider you'd like us to support.
+
+  - type: input
+    id: provider-name
+    attributes:
+      label: Provider Name
+      description: What is the name of this translation provider?
+      placeholder: e.g., Amazon Translate, Microsoft Azure Translator, Mistral AI
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider-type
+    attributes:
+      label: Provider Type
+      description: What type of provider is this?
+      options:
+        - Traditional Translation API
+        - AI/LLM Provider
+        - Self-Hosted Solution
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Provider Description
+      description: Describe the provider and its capabilities
+      placeholder: This provider offers...
+    validations:
+      required: true
+
+  - type: textarea
+    id: api-details
+    attributes:
+      label: API Details
+      description: Provide information about the API
+      placeholder: |
+        - Endpoint: https://api.example.com/translate
+        - Authentication: API Key / OAuth
+        - Rate Limits: X requests per minute
+    validations:
+      required: true
+
+  - type: textarea
+    id: documentation
+    attributes:
+      label: Documentation Links
+      description: Provide links to official API documentation
+      placeholder: |
+        - https://docs.example.com/translate
+    validations:
+      required: true
+
+  - type: dropdown
+    id: requires-api-key
+    attributes:
+      label: Requires API Key?
+      options:
+        - "Yes"
+        - "No"
+        - Optional
+    validations:
+      required: true
+
+  - type: dropdown
+    id: free-tier
+    attributes:
+      label: Free Tier Available?
+      options:
+        - "Yes"
+        - "No"
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: example-usage
+    attributes:
+      label: Example CLI Usage
+      description: How would you expect to use this provider?
+      render: shell
+      placeholder: |
+        locale translate tr --from en --in ./locales --provider example --api-key KEY
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you be willing to contribute this provider?
+      options:
+        - label: I would be willing to submit a PR implementing this provider
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to ensure this provider hasn't been requested
+          required: true
+        - label: I have provided valid API documentation links
+          required: true

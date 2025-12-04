@@ -1,0 +1,110 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [develop]
+    paths-ignore:
+      - '**.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.github/CONTRIBUTING.md'
+      - '.github/SECURITY.md'
+      - '.github/FUNDING.yml'
+  pull_request:
+    branches: [develop]
+    paths-ignore:
+      - '**.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/PULL_REQUEST_TEMPLATE.md'
+      - '.github/CONTRIBUTING.md'
+      - '.github/SECURITY.md'
+      - '.github/FUNDING.yml'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        dotnet-version: ['10.0.x']
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup .NET ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 🏗️ Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: 🧪 Test
+        run: dotnet test --no-build --configuration Release --verbosity normal --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+
+      - name: 📊 Upload test results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            **/TestResults/*.trx
+            **/TestResults/**/coverage.cobertura.xml
+
+      - name: 📈 Upload coverage to Codecov
+        if: matrix.os == 'ubuntu-latest'
+        uses: codecov/codecov-action@v4
+        with:
+          files: '**/coverage.cobertura.xml'
+          fail_ci_if_error: false
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  pack:
+    name: Pack NuGet
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 🏗️ Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: 📦 Pack Locale
+        run: dotnet pack src/Locale/Locale.csproj --no-build --configuration Release --output ./artifacts
+
+      - name: 📦 Pack Locale.CLI
+        run: dotnet pack src/Locale.CLI/Locale.CLI.csproj --no-build --configuration Release --output ./artifacts
+
+      - name: 📤 Upload artifacts
+        uses: actions/upload-artifact@v5
+        with:
+          name: nuget-packages
+          path: ./artifacts/*.nupkg

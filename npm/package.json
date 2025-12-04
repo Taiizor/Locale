@@ -1,0 +1,55 @@
+{
+  "name": "@taiizor/locale-cli",
+  "version": "0.0.6",
+  "description": "Cross-platform CLI tool for multi-format localization management with auto-translation support.",
+  "keywords": [
+    "locale",
+    "localization",
+    "translation",
+    "i18n",
+    "internationalization",
+    "l10n",
+    "cli",
+    "scan",
+    "diff",
+    "check",
+    "convert",
+    "generate",
+    "watch",
+    "translate",
+    "auto-translation",
+    "google-translate",
+    "deepl",
+    "openai",
+    "chatgpt",
+    "claude",
+    "gemini",
+    "ollama"
+  ],
+  "homepage": "https://github.com/Taiizor/Locale#readme",
+  "bugs": {
+    "url": "https://github.com/Taiizor/Locale/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Taiizor/Locale.git"
+  },
+  "license": "MIT",
+  "author": "Taiizor <taiizor@vegalya.com> (https://github.com/Taiizor)",
+  "type": "module",
+  "bin": {
+    "locale": "./bin/locale.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md"
+  ],
+  "scripts": {
+    "postinstall": "node lib/install.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

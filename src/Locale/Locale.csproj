@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- General project properties -->
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+        <DefaultLanguage>en-GB</DefaultLanguage>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>Locale</RootNamespace>
+        <AssemblyName>Locale</AssemblyName>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <!-- Package and build properties -->
+    <PropertyGroup>
+        <ApplicationIcon>Resources\Locale.ico</ApplicationIcon>
+        <Version>0.0.7</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Locale</Title>
+        <PackageId>Locale</PackageId>
+        <Authors>Taiizor</Authors>
+        <Product>Locale</Product>
+        <Copyright>Copyright © $([System.DateTime]::Today.ToString(yyyy)) $(Authors)</Copyright>
+        <Summary>Multi-format localization core library for scanning, diffing, validating, and transforming translation files.</Summary>
+        <Description>Locale is a powerful multi-format localization library that supports JSON, YAML, RESX, PO/Gettext, XLIFF, SRT, VTT, CSV, i18next JSON, Fluent FTL, and VB resources. It provides services for scanning translation gaps, comparing files, validating against rules, converting between formats, and generating skeleton files for new languages.</Description>
+        <PackageReadmeFile>README.MD</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageLicenseExpression></PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>locale;localization;translation;i18n;internationalization;l10n;json;yaml;resx;po;gettext;xliff;srt;vtt;csv;i18next;fluent;ftl;multi-format;scan;diff;validate;convert</PackageTags>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <!--<DocumentationFile>..\$(Title)\bin$(OutputPath)\$(Configuration)\$(TargetFramework)\$(Title).xml</DocumentationFile>-->
+        <PackageProjectUrl>https://github.com/Taiizor/Locale</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>git://github.com/Taiizor/Locale</RepositoryUrl>
+        <PackageDescription>$(Description)</PackageDescription>
+        <PackageIcon>Locale.png</PackageIcon>
+        <Company>$(Authors)</Company>
+        <Owners>$(Authors)</Owners>
+        <LangVersion>preview</LangVersion>
+        <AnalysisLevel>preview</AnalysisLevel>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <NeutralLanguage>$(DefaultLanguage)</NeutralLanguage>
+        <FileVersion>$(Version)</FileVersion>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Configurations>Debug;Release</Configurations>
+        <NoWarn>$(NoWarn);CS8002</NoWarn>
+        <WarningsAsErrors>CS1591</WarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    </PropertyGroup>
+
+    <!-- Source Link for debugging -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub">
+            <Version>8.0.0</Version>
+            <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <!-- Package references -->
+    <ItemGroup>
+        <PackageReference Include="YamlDotNet" Version="16.3.0" />
+    </ItemGroup>
+
+    <!-- Package content -->
+    <ItemGroup>
+        <None Include="README.MD">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="Resources\Locale.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+    <!-- Folder structure -->
+    <ItemGroup>
+        <Folder Include="Properties\" />
+    </ItemGroup>
+
+    <!-- InternalsVisibleTo declarations -->
+    <ItemGroup>
+        <InternalsVisibleTo Include="Locale.Tests" />
+        <InternalsVisibleTo Include="Locale.CLI.Tests" />
+    </ItemGroup>
+
+</Project>

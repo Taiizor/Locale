@@ -1,0 +1,20 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="global.json" />
+    <File Path="NuGet.Config" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Locale.CLI/Locale.CLI.csproj" />
+    <Project Path="src/Locale/Locale.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Locale.CLI.Tests/Locale.CLI.Tests.csproj" />
+    <Project Path="tests/Locale.Tests/Locale.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,137 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Locale (Core Library)
+        - Locale.CLI (Command Line Tool)
+        - Both
+    validations:
+      required: true
+
+  - type: dropdown
+    id: command
+    attributes:
+      label: CLI Command (if applicable)
+      description: Which command is affected?
+      options:
+        - N/A (Library only)
+        - locale scan
+        - locale diff
+        - locale check
+        - locale convert
+        - locale generate
+        - locale watch
+        - locale translate
+    validations:
+      required: false
+
+  - type: dropdown
+    id: format
+    attributes:
+      label: File Format (if applicable)
+      description: Which file format is involved?
+      options:
+        - N/A
+        - JSON
+        - YAML
+        - RESX
+        - PO/Gettext
+        - XLIFF
+        - SRT
+        - VTT
+        - CSV
+        - i18next JSON
+        - Fluent FTL
+        - VB Resources
+        - Multiple formats
+    validations:
+      required: false
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Create a file with...
+        2. Run command...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample-file
+    attributes:
+      label: Sample File Content
+      description: If applicable, provide a minimal sample file that reproduces the issue
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide your environment details
+      placeholder: |
+        - OS: Windows 11 / macOS 14 / Ubuntu 22.04
+        - .NET Version: 8.0.0
+        - Locale Version: 0.0.4
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: If applicable, paste any error logs or stack traces
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't been reported
+          required: true
+        - label: I have provided all the requested information
+          required: true

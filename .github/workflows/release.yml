@@ -1,0 +1,236 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+jobs:
+  # Build self-contained executables for each platform
+  build-binaries:
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: ubuntu-latest
+            rid: linux-arm64
+          - os: windows-latest
+            rid: win-x64
+          - os: windows-latest
+            rid: win-arm64
+          - os: macos-latest
+            rid: osx-x64
+          - os: macos-latest
+            rid: osx-arm64
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 🏷️ Get version from tag
+        id: version
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: 🏗️ Publish self-contained binary
+        run: >
+          dotnet publish src/Locale.CLI/Locale.CLI.csproj
+          --configuration Release
+          --framework net10.0
+          --runtime ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:EnableCompressionInSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:Version=${{ steps.version.outputs.VERSION }}
+          --output ./publish/${{ matrix.rid }}
+
+      - name: 📝 Rename binary to 'locale' (Windows)
+        if: startsWith(matrix.rid, 'win')
+        shell: pwsh
+        run: |
+          Move-Item -Path ./publish/${{ matrix.rid }}/Locale.CLI.exe -Destination ./publish/${{ matrix.rid }}/locale.exe
+
+      - name: 📝 Rename binary to 'locale' (Unix)
+        if: ${{ !startsWith(matrix.rid, 'win') }}
+        run: |
+          mv ./publish/${{ matrix.rid }}/Locale.CLI ./publish/${{ matrix.rid }}/locale
+
+      - name: 📦 Create zip archive (Windows)
+        if: startsWith(matrix.rid, 'win')
+        shell: pwsh
+        run: |
+          Compress-Archive -Path ./publish/${{ matrix.rid }}/* -DestinationPath ./locale-${{ matrix.rid }}.zip
+
+      - name: 📦 Create zip archive (Unix)
+        if: ${{ !startsWith(matrix.rid, 'win') }}
+        run: |
+          cd ./publish/${{ matrix.rid }}
+          zip -r ../../locale-${{ matrix.rid }}.zip .
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: locale-${{ matrix.rid }}
+          path: ./locale-${{ matrix.rid }}.zip
+
+  # Main release job
+  release:
+    name: Create Release
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 🏷️ Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 🏗️ Build
+        run: dotnet build --no-restore --configuration Release -p:Version=${{ steps.version.outputs.VERSION }}
+
+      - name: 🧪 Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+      - name: 📦 Pack Locale
+        run: dotnet pack src/Locale/Locale.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ steps.version.outputs.VERSION }}
+
+      - name: 📦 Pack Locale.CLI
+        run: dotnet pack src/Locale.CLI/Locale.CLI.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ steps.version.outputs.VERSION }}
+
+      - name: 📥 Download all binary artifacts
+        uses: actions/download-artifact@v6
+        with:
+          path: ./binaries
+          pattern: locale-*
+          merge-multiple: true
+
+      - name: 🚀 Push to NuGet.org
+        run: |
+          dotnet nuget push ./artifacts/Locale.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push ./artifacts/Locale.CLI.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: 🚀 Push to GitHub Packages
+        run: |
+          dotnet nuget add source --username Taiizor --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Taiizor/index.json"
+          dotnet nuget push ./artifacts/*.nupkg --source "github" --skip-duplicate
+
+      - name: 📝 Generate Release Notes
+        id: release_notes
+        run: |
+          echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+          echo "## 📦 Packages" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "| Package | Version | Downloads |" >> $GITHUB_OUTPUT
+          echo "|---------|---------|-----------|" >> $GITHUB_OUTPUT
+          echo "| [Locale](https://www.nuget.org/packages/Locale) | ${{ steps.version.outputs.VERSION }} | [![NuGet Downloads](https://img.shields.io/nuget/dt/Locale.svg)](https://www.nuget.org/packages/Locale) |" >> $GITHUB_OUTPUT
+          echo "| [Locale.CLI](https://www.nuget.org/packages/Locale.CLI) | ${{ steps.version.outputs.VERSION }} | [![NuGet Downloads](https://img.shields.io/nuget/dt/Locale.CLI.svg)](https://www.nuget.org/packages/Locale.CLI) |" >> $GITHUB_OUTPUT
+          echo "| [@taiizor/locale-cli](https://www.npmjs.com/package/@taiizor/locale-cli) | ${{ steps.version.outputs.VERSION }} | [![npm Downloads](https://img.shields.io/npm/dt/@taiizor/locale-cli.svg)](https://www.npmjs.com/package/@taiizor/locale-cli) |" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## 📥 Installation" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "\`\`\`bash" >> $GITHUB_OUTPUT
+          echo "# .NET CLI tool" >> $GITHUB_OUTPUT
+          echo "dotnet tool install -g Locale.CLI --version ${{ steps.version.outputs.VERSION }}" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "# npm/pnpm/bun/yarn" >> $GITHUB_OUTPUT
+          echo "npm install -g @taiizor/locale-cli" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "# NuGet library" >> $GITHUB_OUTPUT
+          echo "dotnet add package Locale --version ${{ steps.version.outputs.VERSION }}" >> $GITHUB_OUTPUT
+          echo "\`\`\`" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "## 📦 Platform Binaries" >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "| Platform | Architecture | Download |" >> $GITHUB_OUTPUT
+          echo "|----------|--------------|----------|" >> $GITHUB_OUTPUT
+          echo "| Linux | x64 | [locale-linux-x64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-linux-x64.zip) |" >> $GITHUB_OUTPUT
+          echo "| Linux | arm64 | [locale-linux-arm64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-linux-arm64.zip) |" >> $GITHUB_OUTPUT
+          echo "| Windows | x64 | [locale-win-x64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-win-x64.zip) |" >> $GITHUB_OUTPUT
+          echo "| Windows | arm64 | [locale-win-arm64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-win-arm64.zip) |" >> $GITHUB_OUTPUT
+          echo "| macOS | x64 | [locale-osx-x64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-osx-x64.zip) |" >> $GITHUB_OUTPUT
+          echo "| macOS | arm64 | [locale-osx-arm64.zip](https://github.com/Taiizor/Locale/releases/download/v${{ steps.version.outputs.VERSION }}/locale-osx-arm64.zip) |" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: 🎉 Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ steps.version.outputs.VERSION }}
+          body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, '-') }}
+          files: |
+            ./artifacts/*.nupkg
+            ./artifacts/*.snupkg
+            ./binaries/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish to npm
+  publish-npm:
+    name: Publish to npm
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 🏷️ Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: 📝 Update npm package version
+        run: |
+          cd npm
+          npm version ${{ steps.version.outputs.VERSION }} --no-git-tag-version --allow-same-version
+
+      - name: 🚀 Publish to npm
+        run: |
+          cd npm
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

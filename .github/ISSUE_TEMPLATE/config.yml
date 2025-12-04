@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Taiizor/Locale/discussions
+    about: Ask questions and discuss ideas
+  - name: 📖 Documentation
+    url: https://github.com/Taiizor/Locale#readme
+    about: Read the documentation before opening an issue

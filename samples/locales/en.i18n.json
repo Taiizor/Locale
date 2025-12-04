@@ -1,0 +1,39 @@
+{
+  "app": {
+    "name": "Locale",
+    "description": "Multi-format localization library and CLI tool for .NET"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
+  "home": {
+    "title": "Welcome to Locale",
+    "subtitle": "Manage your translations with ease",
+    "getStarted": "Get Started"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "warning": "Please review your changes",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "itemNotFound": "The requested item was not found"
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Please enter a valid email address",
+    "minLength": "Must be at least {{count}} characters",
+    "maxLength": "Must not exceed {{count}} characters"
+  },
+  "navigation": {
+    "home": "Home",
+    "settings": "Settings",
+    "help": "Help",
+    "about": "About"
+  }
+}

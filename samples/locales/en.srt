@@ -1,0 +1,43 @@
+1
+00:00:01,000 --> 00:00:04,000
+Welcome to Locale
+
+2
+00:00:04,500 --> 00:00:08,000
+Multi-format localization library
+and CLI tool for .NET
+
+3
+00:00:09,000 --> 00:00:12,000
+Manage your translations with ease
+
+4
+00:00:13,000 --> 00:00:16,000
+Get Started with Locale today!
+
+5
+00:00:17,000 --> 00:00:20,000
+Scan, diff, validate, convert,
+generate, watch, and auto-translate
+
+6
+00:00:21,000 --> 00:00:24,000
+Support for 11 different
+localization file formats
+
+7
+00:00:25,000 --> 00:00:28,000
+JSON, YAML, RESX, PO, XLIFF
+
+8
+00:00:29,000 --> 00:00:32,000
+SRT, VTT, CSV, i18next, Fluent, VB
+
+9
+00:00:33,000 --> 00:00:36,000
+Try it now with:
+dotnet tool install -g Locale.CLI
+
+10
+00:00:37,000 --> 00:00:40,000
+Thank you for using Locale!

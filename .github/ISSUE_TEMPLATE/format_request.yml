@@ -1,0 +1,89 @@
+name: 📁 New Format Request
+description: Request support for a new localization file format
+title: "[Format]: "
+labels: ["enhancement", "new-format", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new format! Please provide details about the format you'd like us to support.
+
+  - type: input
+    id: format-name
+    attributes:
+      label: Format Name
+      description: What is the name of this localization format?
+      placeholder: e.g., Android XML, iOS Strings, ARB
+    validations:
+      required: true
+
+  - type: input
+    id: file-extension
+    attributes:
+      label: File Extension(s)
+      description: What file extension(s) does this format use?
+      placeholder: e.g., .xml, .strings, .arb
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Format Description
+      description: Describe the format and where it's commonly used
+      placeholder: This format is used by...
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample
+    attributes:
+      label: Sample File
+      description: Provide a sample file in this format
+      render: text
+      placeholder: |
+        <!-- Example file content -->
+    validations:
+      required: true
+
+  - type: textarea
+    id: documentation
+    attributes:
+      label: Documentation Links
+      description: Provide links to official documentation or specifications
+      placeholder: |
+        - https://...
+        - https://...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this format to you?
+      options:
+        - Nice to have
+        - Would help my workflow
+        - Critical for my project
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you be willing to contribute this format?
+      options:
+        - label: I would be willing to submit a PR implementing this format
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to ensure this format hasn't been requested
+          required: true
+        - label: I have provided a valid sample file
+          required: true

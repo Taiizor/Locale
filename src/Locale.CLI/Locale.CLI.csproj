@@ -1,0 +1,108 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- General project properties -->
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+        <ToolCommandName>locale</ToolCommandName>
+        <RootNamespace>Locale.CLI</RootNamespace>
+        <DefaultLanguage>en-GB</DefaultLanguage>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>Locale.CLI</AssemblyName>
+        <PackAsTool>true</PackAsTool>
+        <OutputType>Exe</OutputType>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <!-- Package and build properties -->
+    <PropertyGroup>
+        <ApplicationIcon>Resources\Locale.ico</ApplicationIcon>
+        <Version>0.0.7</Version>
+        <AssemblyVersion>$(Version)</AssemblyVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Locale.CLI</Title>
+        <PackageId>Locale.CLI</PackageId>
+        <Authors>Taiizor</Authors>
+        <Product>Locale.CLI</Product>
+        <Copyright>Copyright © $([System.DateTime]::Today.ToString(yyyy)) $(Authors)</Copyright>
+        <Summary>Cross-platform CLI tool for multi-format localization management with auto-translation support.</Summary>
+        <Description>Locale.CLI is a powerful cross-platform command-line tool for managing localization files. Features include: scan (detect missing/orphan keys), diff (compare files), check (validate rules), convert (transform formats), generate (create skeleton files), watch (monitor changes), and translate (auto-translate using Google, DeepL, Bing, Yandex, LibreTranslate, OpenAI, Claude, Gemini, Azure OpenAI, or Ollama).</Description>
+        <PackageReadmeFile>README.MD</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageLicenseExpression></PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageTags>locale;localization;translation;i18n;internationalization;l10n;cli;dotnet-tool;scan;diff;check;convert;generate;watch;translate;auto-translation;google-translate;deepl;openai;chatgpt;claude;gemini;ollama</PackageTags>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <!--<DocumentationFile>..\$(Title)\bin$(OutputPath)\$(Configuration)\$(TargetFramework)\$(Title).xml</DocumentationFile>-->
+        <PackageProjectUrl>https://github.com/Taiizor/Locale</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>git://github.com/Taiizor/Locale</RepositoryUrl>
+        <PackageDescription>$(Description)</PackageDescription>
+        <PackageIcon>Locale.png</PackageIcon>
+        <Company>$(Authors)</Company>
+        <Owners>$(Authors)</Owners>
+        <LangVersion>preview</LangVersion>
+        <AnalysisLevel>preview</AnalysisLevel>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <NeutralLanguage>$(DefaultLanguage)</NeutralLanguage>
+        <FileVersion>$(Version)</FileVersion>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Configurations>Debug;Release</Configurations>
+        <NoWarn>$(NoWarn);CS8002</NoWarn>
+        <WarningsAsErrors>CS1591</WarningsAsErrors>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    </PropertyGroup>
+
+    <!-- Source Link for debugging -->
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub">
+            <Version>8.0.0</Version>
+            <PrivateAssets>All</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <!-- Project references -->
+    <ItemGroup>
+        <ProjectReference Include="..\Locale\Locale.csproj" />
+    </ItemGroup>
+
+    <!-- Package references -->
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.7" />
+        <PackageReference Include="Spectre.Console.Cli" Version="1.0.0-alpha.0.11" />
+    </ItemGroup>
+
+    <!-- Package content -->
+    <ItemGroup>
+        <None Include="README.MD">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="Resources\Locale.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+
+    <!-- Folder structure -->
+    <ItemGroup>
+        <Folder Include="Properties\" />
+    </ItemGroup>
+
+    <!-- InternalsVisibleTo declarations -->
+    <ItemGroup>
+        <InternalsVisibleTo Include="Locale.Tests" />
+        <InternalsVisibleTo Include="Locale.CLI.Tests" />
+    </ItemGroup>
+
+</Project>

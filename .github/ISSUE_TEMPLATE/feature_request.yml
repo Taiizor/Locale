@@ -1,0 +1,99 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please fill out the form below.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What category does this feature fall under?
+      options:
+        - New File Format
+        - New CLI Command
+        - New Translation Provider
+        - New Validation Rule
+        - Performance Improvement
+        - Developer Experience
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - Locale (Core Library)
+        - Locale.CLI (Command Line Tool)
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Describe the problem this feature would solve
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution
+      placeholder: I would like to see...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions you've considered
+    validations:
+      required: false
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: Usage Examples
+      description: Provide example code or CLI commands showing how this feature would be used
+      render: shell
+      placeholder: |
+        # Example CLI usage
+        locale new-command ./locales --option value
+        
+        # Example library usage
+        var service = new NewService();
+        service.DoSomething();
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Would you be willing to contribute this feature?
+      options:
+        - label: I would be willing to submit a PR for this feature
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested
+          required: true
+        - label: This feature aligns with the project's goals
+          required: true

@@ -1,0 +1,89 @@
+# Locale English Translations
+# Copyright (C) 2024 Locale
+# This file is distributed under the MIT License.
+#
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. The name of the application
+msgid "app.name"
+msgstr "Locale"
+
+#. The description of the application
+msgid "app.description"
+msgstr "Multi-format localization library and CLI tool for .NET"
+
+msgid "common.ok"
+msgstr "OK"
+
+msgid "common.cancel"
+msgstr "Cancel"
+
+msgid "common.save"
+msgstr "Save"
+
+msgid "common.delete"
+msgstr "Delete"
+
+msgid "common.edit"
+msgstr "Edit"
+
+msgid "common.close"
+msgstr "Close"
+
+msgid "common.loading"
+msgstr "Loading..."
+
+msgid "common.error"
+msgstr "An error occurred"
+
+#. Main page title
+msgid "home.title"
+msgstr "Welcome to Locale"
+
+#. Main page subtitle
+msgid "home.subtitle"
+msgstr "Manage your translations with ease"
+
+msgid "home.getStarted"
+msgstr "Get Started"
+
+msgid "messages.success"
+msgstr "Operation completed successfully"
+
+msgid "messages.warning"
+msgstr "Please review your changes"
+
+msgid "messages.confirmDelete"
+msgstr "Are you sure you want to delete this item?"
+
+msgid "messages.itemNotFound"
+msgstr "The requested item was not found"
+
+msgid "validation.required"
+msgstr "This field is required"
+
+msgid "validation.email"
+msgstr "Please enter a valid email address"
+
+msgid "validation.minLength"
+msgstr "Must be at least {0} characters"
+
+msgid "validation.maxLength"
+msgstr "Must not exceed {0} characters"
+
+msgid "navigation.home"
+msgstr "Home"
+
+msgid "navigation.settings"
+msgstr "Settings"
+
+msgid "navigation.help"
+msgstr "Help"
+
+msgid "navigation.about"
+msgstr "About"
