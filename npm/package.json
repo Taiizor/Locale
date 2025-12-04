@@ -1,6 +1,6 @@
 {
   "name": "@taiizor/locale-cli",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Cross-platform CLI tool for multi-format localization management with auto-translation support.",
   "keywords": [
     "locale",

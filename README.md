@@ -9,6 +9,7 @@
     <a href="https://www.nuget.org/packages/Locale"><img src="https://img.shields.io/nuget/v/Locale?style=flat-square&logo=nuget" alt="NuGet Version"></a>
     <a href="https://www.nuget.org/packages/Locale"><img src="https://img.shields.io/nuget/dt/Locale?style=flat-square&logo=nuget" alt="NuGet Downloads"></a>
     <a href="https://www.npmjs.com/package/@taiizor/locale-cli"><img src="https://img.shields.io/npm/v/@taiizor/locale-cli?style=flat-square&logo=npm" alt="npm Version"></a>
+    <a href="https://www.npmjs.com/package/@taiizor/locale-cli"><img src="https://img.shields.io/npm/dm/@taiizor/locale-cli?style=flat-square&logo=npm" alt="npm Downloads"></a>
     <a href="https://github.com/Taiizor/Locale/blob/develop/LICENSE"><img src="https://img.shields.io/github/license/Taiizor/Locale?style=flat-square" alt="License"></a>
   </p>
 

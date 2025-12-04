@@ -14,6 +14,19 @@ string version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribu
               ?? assembly.GetName().Version?.ToString()
               ?? "Unknown";
 
+// Header section with project branding
+// Using distinct colors from HelpProviderStyles to avoid visual conflict:
+// - Magenta for banner/branding (vs Cyan for help headers)
+// - DarkOrange for tagline (vs Blue for commands)
+// - White for version (vs Green for values)
+AnsiConsole.Write(new Rule().RuleStyle(new Style(foreground: Color.Magenta1)));
+AnsiConsole.Write(new FigletText("Locale CLI")
+    .LeftJustified()
+    .Color(Color.DeepPink1));
+AnsiConsole.MarkupLine($"[bold darkorange]Multi-format localization toolkit[/] [dim]•[/] [orangered1]v{version}[/]");
+AnsiConsole.Write(new Rule().RuleStyle(new Style(foreground: Color.Magenta1)));
+AnsiConsole.WriteLine();
+
 CommandApp app = new();
 
 app.Configure(config =>
