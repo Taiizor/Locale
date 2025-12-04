@@ -31,3 +31,19 @@ updates:
     commit-message:
       prefix: "ci"
       include: "scope"
+
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/npm"
+    schedule:
+      interval: "monthly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Istanbul"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
