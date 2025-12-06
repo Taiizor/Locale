@@ -17,7 +17,7 @@ public sealed class DiffOptions
     /// <summary>
     /// Gets or sets the placeholder pattern to use for matching.
     /// </summary>
-    public string PlaceholderPattern { get; set; } = @"\{+\w+\}+";
+    public string PlaceholderPattern { get; set; } = PlaceholderHelper.DefaultPlaceholderPattern;
 }
 
 /// <summary>
@@ -87,7 +87,7 @@ public sealed class DiffService(FormatRegistry registry)
         // Check placeholders
         if (options.CheckPlaceholders)
         {
-            Regex placeholderRegex = new(options.PlaceholderPattern);
+            Regex placeholderRegex = PlaceholderHelper.GetRegex(options.PlaceholderPattern);
             Dictionary<string, LocalizationEntry> firstEntries = first.Entries.ToDictionary(e => e.Key, e => e);
 
             foreach (KeyValuePair<string, LocalizationEntry> kvp in secondEntries)
@@ -97,8 +97,8 @@ public sealed class DiffService(FormatRegistry registry)
                     continue;
                 }
 
-                List<string> firstPlaceholders = ExtractPlaceholders(firstEntry.Value, placeholderRegex);
-                List<string> secondPlaceholders = ExtractPlaceholders(kvp.Value.Value, placeholderRegex);
+                List<string> firstPlaceholders = PlaceholderHelper.ExtractPlaceholders(firstEntry.Value, placeholderRegex);
+                List<string> secondPlaceholders = PlaceholderHelper.ExtractPlaceholders(kvp.Value.Value, placeholderRegex);
 
                 if (!firstPlaceholders.SequenceEqual(secondPlaceholders))
                 {
@@ -121,17 +121,5 @@ public sealed class DiffService(FormatRegistry registry)
             ?? throw new NotSupportedException($"Unsupported file format: {filePath}");
 
         return format.Parse(filePath);
-    }
-
-    private static List<string> ExtractPlaceholders(string? value, Regex regex)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return [];
-        }
-
-        return [.. regex.Matches(value)
-            .Select(m => m.Value)
-            .OrderBy(p => p)];
     }
 }

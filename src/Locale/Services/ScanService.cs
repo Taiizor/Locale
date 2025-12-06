@@ -38,7 +38,7 @@ public sealed class ScanOptions
     /// Gets or sets the placeholder pattern to use for matching.
     /// Default matches {name} and {{name}} patterns.
     /// </summary>
-    public string PlaceholderPattern { get; set; } = @"\{+\w+\}+";
+    public string PlaceholderPattern { get; set; } = PlaceholderHelper.DefaultPlaceholderPattern;
 }
 
 /// <summary>
@@ -230,7 +230,7 @@ public sealed class ScanService(FormatRegistry registry)
         // Check placeholders
         if (options.CheckPlaceholders)
         {
-            Regex placeholderRegex = new(options.PlaceholderPattern);
+            Regex placeholderRegex = PlaceholderHelper.GetRegex(options.PlaceholderPattern);
 
             foreach (KeyValuePair<string, LocalizationEntry> kvp in targetEntries)
             {
@@ -239,8 +239,8 @@ public sealed class ScanService(FormatRegistry registry)
                     continue;
                 }
 
-                List<string> basePlaceholders = ExtractPlaceholders(baseEntry.Value, placeholderRegex);
-                List<string> targetPlaceholders = ExtractPlaceholders(kvp.Value.Value, placeholderRegex);
+                List<string> basePlaceholders = PlaceholderHelper.ExtractPlaceholders(baseEntry.Value, placeholderRegex);
+                List<string> targetPlaceholders = PlaceholderHelper.ExtractPlaceholders(kvp.Value.Value, placeholderRegex);
 
                 if (!basePlaceholders.SequenceEqual(targetPlaceholders))
                 {
@@ -255,18 +255,6 @@ public sealed class ScanService(FormatRegistry registry)
         }
 
         return result;
-    }
-
-    private static List<string> ExtractPlaceholders(string? value, Regex regex)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return [];
-        }
-
-        return [.. regex.Matches(value)
-            .Select(m => m.Value)
-            .OrderBy(p => p)];
     }
 
     private static bool ShouldIgnore(string filePath, List<string> patterns)

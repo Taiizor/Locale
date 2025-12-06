@@ -36,9 +36,14 @@ public sealed class ScanReport
     public int TotalEmptyValues => Results.Sum(r => r.EmptyValues.Count);
 
     /// <summary>
+    /// Gets the total count of placeholder mismatches across all targets.
+    /// </summary>
+    public int TotalPlaceholderMismatches => Results.Sum(r => r.PlaceholderMismatches.Count);
+
+    /// <summary>
     /// Gets whether the scan found any issues.
     /// </summary>
-    public bool HasIssues => TotalMissingKeys > 0 || TotalOrphanKeys > 0 || TotalEmptyValues > 0;
+    public bool HasIssues => TotalMissingKeys > 0 || TotalOrphanKeys > 0 || TotalEmptyValues > 0 || TotalPlaceholderMismatches > 0;
 }
 
 /// <summary>

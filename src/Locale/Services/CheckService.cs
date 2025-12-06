@@ -71,7 +71,7 @@ public sealed class CheckOptions
     /// <summary>
     /// Gets or sets the placeholder pattern to use for matching.
     /// </summary>
-    public string PlaceholderPattern { get; set; } = @"\{+\w+\}+";
+    public string PlaceholderPattern { get; set; } = PlaceholderHelper.DefaultPlaceholderPattern;
 }
 
 /// <summary>
@@ -237,7 +237,7 @@ public sealed class CheckService(FormatRegistry registry)
 
     private static void CheckPlaceholders(List<LocalizationFile> files, string baseCulture, string pattern, CheckReport report)
     {
-        Regex regex = new(pattern);
+        Regex regex = PlaceholderHelper.GetRegex(pattern);
 
         List<LocalizationFile> baseFiles = [.. files.Where(f =>
             f.Culture?.Equals(baseCulture, StringComparison.OrdinalIgnoreCase) == true)];
@@ -247,7 +247,7 @@ public sealed class CheckService(FormatRegistry registry)
         {
             foreach (LocalizationEntry entry in file.Entries)
             {
-                List<string> placeholders = ExtractPlaceholders(entry.Value, regex);
+                List<string> placeholders = PlaceholderHelper.ExtractPlaceholders(entry.Value, regex);
                 baseEntries[entry.Key] = placeholders;
             }
         }
@@ -266,7 +266,7 @@ public sealed class CheckService(FormatRegistry registry)
                     continue;
                 }
 
-                List<string> targetPlaceholders = ExtractPlaceholders(entry.Value, regex);
+                List<string> targetPlaceholders = PlaceholderHelper.ExtractPlaceholders(entry.Value, regex);
 
                 if (!basePlaceholders.SequenceEqual(targetPlaceholders))
                 {
@@ -281,18 +281,6 @@ public sealed class CheckService(FormatRegistry registry)
                 }
             }
         }
-    }
-
-    private static List<string> ExtractPlaceholders(string? value, Regex regex)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return [];
-        }
-
-        return [.. regex.Matches(value)
-            .Select(m => m.Value)
-            .OrderBy(p => p)];
     }
 
     private List<LocalizationFile> DiscoverFiles(string path, bool recursive)

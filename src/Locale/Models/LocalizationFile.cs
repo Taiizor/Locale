@@ -7,6 +7,8 @@ namespace Locale.Models;
 /// </summary>
 public sealed class LocalizationFile
 {
+    private Dictionary<string, LocalizationEntry>? _entriesByKey;
+
     /// <summary>
     /// Gets or sets the file path (absolute or relative).
     /// </summary>
@@ -25,13 +27,26 @@ public sealed class LocalizationFile
     /// <summary>
     /// Gets the collection of localization entries in this file.
     /// </summary>
-    public List<LocalizationEntry> Entries { get; init; } = [];
+    public List<LocalizationEntry> Entries
+    {
+        get;
+        init
+        {
+            field = value;
+            _entriesByKey = null; // Invalidate cache when entries change
+        }
+    } = [];
 
     /// <summary>
     /// Gets a dictionary mapping keys to entries for quick lookup.
+    /// The dictionary is cached for performance and is guaranteed to be non-null.
     /// </summary>
+    /// <remarks>
+    /// This property uses lazy initialization with null-coalescing assignment.
+    /// The cache is invalidated when the Entries collection is modified.
+    /// </remarks>
     public IReadOnlyDictionary<string, LocalizationEntry> EntriesByKey =>
-        Entries.ToDictionary(e => e.Key, e => e);
+        _entriesByKey ??= Entries.ToDictionary(e => e.Key, e => e);
 
     /// <summary>
     /// Gets all keys in this file.
@@ -68,7 +83,7 @@ public sealed class LocalizationFile
     /// </summary>
     public string? GetValue(string key)
     {
-        return Entries.FirstOrDefault(e => e.Key == key)?.Value;
+        return EntriesByKey.TryGetValue(key, out LocalizationEntry? entry) ? entry.Value : null;
     }
 
     /// <summary>
@@ -76,7 +91,7 @@ public sealed class LocalizationFile
     /// </summary>
     public bool ContainsKey(string key)
     {
-        return Entries.Any(e => e.Key == key);
+        return EntriesByKey.ContainsKey(key);
     }
 
     /// <summary>

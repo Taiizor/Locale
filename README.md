@@ -6,6 +6,7 @@
 
   <p>
     <a href="https://github.com/Taiizor/Locale/actions"><img src="https://img.shields.io/github/actions/workflow/status/Taiizor/Locale/build.yml?style=flat-square&logo=github" alt="Build Status"></a>
+    <a href="https://codecov.io/gh/Taiizor/Locale"><img src="https://img.shields.io/codecov/c/github/Taiizor/Locale?style=flat-square&logo=codecov" alt="Code Coverage"></a>
     <a href="https://www.nuget.org/packages/Locale"><img src="https://img.shields.io/nuget/v/Locale?style=flat-square&logo=nuget" alt="NuGet Version"></a>
     <a href="https://www.nuget.org/packages/Locale"><img src="https://img.shields.io/nuget/dt/Locale?style=flat-square&logo=nuget" alt="NuGet Downloads"></a>
     <a href="https://www.npmjs.com/package/@taiizor/locale-cli"><img src="https://img.shields.io/npm/v/@taiizor/locale-cli?style=flat-square&logo=npm" alt="npm Version"></a>
@@ -18,7 +19,8 @@
     <a href="#-cli-commands">CLI Commands</a> •
     <a href="#-library-usage">Library Usage</a> •
     <a href="#-supported-formats">Formats</a> •
-    <a href="#-translation-providers">Providers</a>
+    <a href="#-translation-providers">Providers</a> •
+    <a href="./docs/README.md">Documentation</a>
   </p>
 </div>
 
