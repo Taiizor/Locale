@@ -87,7 +87,7 @@ jobs:
           zip -r ../../locale-${{ matrix.rid }}.zip .
 
       - name: 📤 Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: locale-${{ matrix.rid }}
           path: ./locale-${{ matrix.rid }}.zip
