@@ -75,7 +75,7 @@
     <!-- Package references -->
     <ItemGroup>
         <PackageReference Include="Spectre.Console" Version="0.54.1-alpha.0.10" />
-        <PackageReference Include="Spectre.Console.Cli" Version="1.0.0-alpha.0.12" />
+        <PackageReference Include="Spectre.Console.Cli" Version="1.0.0-alpha.0.15" />
     </ItemGroup>
 
     <!-- Package content -->
