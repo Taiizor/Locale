@@ -57,7 +57,7 @@ jobs:
 
       - name: 📊 Upload test results
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-results-${{ matrix.os }}
           path: |
@@ -104,7 +104,7 @@ jobs:
         run: dotnet pack src/Locale.CLI/Locale.CLI.csproj --no-build --configuration Release --output ./artifacts
 
       - name: 📤 Upload artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: nuget-packages
           path: ./artifacts/*.nupkg
