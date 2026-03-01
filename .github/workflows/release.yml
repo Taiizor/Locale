@@ -132,7 +132,7 @@ jobs:
         run: dotnet pack src/Locale.CLI/Locale.CLI.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ steps.version.outputs.VERSION }}
 
       - name: 📥 Download all binary artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./binaries
           pattern: locale-*
