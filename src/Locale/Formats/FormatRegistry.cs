@@ -5,7 +5,7 @@ namespace Locale.Formats;
 /// </summary>
 public sealed class FormatRegistry
 {
-    private readonly Dictionary<string, ILocalizationFormat> _formats = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, ILocalizationFormat> _formats = [with(StringComparer.OrdinalIgnoreCase)];
     private readonly List<ILocalizationFormat> _formatList = [];
 
     /// <summary>

@@ -160,7 +160,7 @@ public sealed class ScanService(FormatRegistry registry)
 
     private Dictionary<string, List<LocalizationFile>> GroupFilesByCulture(IEnumerable<LocalizationFile> files, string? baseCultureFallback = null)
     {
-        Dictionary<string, List<LocalizationFile>> result = new(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, List<LocalizationFile>> result = [with(StringComparer.OrdinalIgnoreCase)];
         string? fallback = baseCultureFallback?.ToLowerInvariant();
 
         foreach (LocalizationFile file in files)
