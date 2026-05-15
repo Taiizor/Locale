@@ -62,7 +62,7 @@
     <!-- Source Link for debugging -->
     <ItemGroup>
         <PackageReference Include="Microsoft.SourceLink.GitHub">
-            <Version>10.0.203</Version>
+            <Version>10.0.300</Version>
             <PrivateAssets>All</PrivateAssets>
         </PackageReference>
     </ItemGroup>
