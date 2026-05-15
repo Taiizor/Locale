@@ -143,13 +143,16 @@ jobs:
 
       - name: 🚀 Push to NuGet.org
         run: |
-          dotnet nuget push ./artifacts/Locale.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
-          dotnet nuget push ./artifacts/Locale.CLI.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          dotnet nuget push ./artifacts/Locale.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --timeout 600
+          dotnet nuget push ./artifacts/Locale.CLI.${{ steps.version.outputs.VERSION }}.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate --timeout 600
 
       - name: 🚀 Push to GitHub Packages
+        # GitHub Packages can be slow to accept large nupkg uploads — the default
+        # 300s timeout has caused Locale.CLI (~3.5 MB) to fail in the past.
+        # --api-key is also required (the deprecated --username/--password warns).
         run: |
           dotnet nuget add source --username Taiizor --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Taiizor/index.json"
-          dotnet nuget push ./artifacts/*.nupkg --source "github" --skip-duplicate
+          dotnet nuget push ./artifacts/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate --timeout 600
 
       - name: 📝 Generate Release Notes
         id: release_notes
