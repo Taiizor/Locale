@@ -170,13 +170,10 @@ public class LocalizationFileTests
         };
 
         // Act
-        CultureInfo? cultureInfo = file.GetCultureInfo();
-
-        // Assert
-        // Platform-specific behavior: Windows returns null, Linux may create a culture
-        // The important thing is that the method doesn't throw an exception
-        // We accept either null or a valid CultureInfo object
-        Assert.True(cultureInfo is null or not null);
+        // Platform-specific behavior: Windows returns null, Linux may create a culture.
+        // The important thing is that the method does not throw — no assertion needed
+        // because the test would fail on an unhandled exception.
+        _ = file.GetCultureInfo();
     }
 
     [Fact]

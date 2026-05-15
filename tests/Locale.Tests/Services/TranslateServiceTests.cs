@@ -31,7 +31,8 @@ public class TranslateServiceTests
             TargetLanguage = "tr"
         };
 
-        List<TranslateResult> results = await service.TranslateAsync("/nonexistent/path", "/output", options);
+        List<TranslateResult> results = await service.TranslateAsync(
+            "/nonexistent/path", "/output", options, TestContext.Current.CancellationToken);
 
         Assert.Single(results);
         Assert.False(results[0].Success);
