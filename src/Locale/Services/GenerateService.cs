@@ -140,7 +140,15 @@ public sealed class GenerateService(FormatRegistry registry)
                 continue;
             }
 
-            if (baseFile.Culture?.Equals(options.BaseCulture, StringComparison.OrdinalIgnoreCase) != true)
+            // Treat files without a detected culture (e.g. neutral Resources.resx)
+            // as belonging to the configured base culture.
+            string? effectiveCulture = baseFile.Culture;
+            if (string.IsNullOrEmpty(effectiveCulture))
+            {
+                effectiveCulture = options.BaseCulture;
+            }
+
+            if (!effectiveCulture.Equals(options.BaseCulture, StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }

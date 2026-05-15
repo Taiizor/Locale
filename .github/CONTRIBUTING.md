@@ -6,7 +6,9 @@ Thank you for your interest in contributing to Locale! This document provides gu
 
 ### Prerequisites
 
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/download) or later
+- [.NET 11.0 SDK (preview)](https://dotnet.microsoft.com/download/dotnet/11.0) — required to build all target frameworks
+  - The library targets `net8.0`, `net9.0`, `net10.0`, and `net11.0`. The .NET 11 SDK can compile all of them.
+  - For local development without preview, .NET 10 SDK works for `net8.0`/`net9.0`/`net10.0` builds (you need to remove `net11.0` from `TargetFrameworks` temporarily).
 - Git
 - Your favorite IDE (Visual Studio, VS Code, Rider)
 

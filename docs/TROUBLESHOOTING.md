@@ -730,6 +730,27 @@ find ./locales -type f \
 locale scan ./locales --base en --verbose
 ```
 
+### "No files found to translate" with a non-English neutral language
+
+**Cause:** Your project keeps its base-language strings in a file without a
+culture suffix (e.g. `Resources.resx` for German), so culture detection
+returns `null` and the file does not match `--from de`.
+
+**Fix:** Use `--base` to tell Locale that suffix-less files belong to the
+specified culture. When `--base` is set, `--from` defaults to it:
+
+```bash
+# Project layout:
+#   Resources.resx        (German, neutral / base)
+#   Resources.en.resx     (English translations)
+#   Resources.es.resx     (Spanish translations)
+
+locale translate en --base de --in ./Resources \
+  --provider libretranslate --endpoint http://localhost:5050
+```
+
+The same `--base` option works for `scan`, `check`, `watch`, and `generate`.
+
 ### "Invalid culture code"
 
 **Cause:** Culture code not recognized

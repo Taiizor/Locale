@@ -218,4 +218,49 @@ public class CheckServiceTests
         CheckService service = new(FormatRegistry.Default);
         Assert.NotNull(service);
     }
+
+    [Fact]
+    public void Check_NeutralFileAsBase_DetectsOrphanKeysInTranslation()
+    {
+        // Issue #24: a neutral Resources.resx (Culture=null) should be treated
+        // as the base culture file when --base is supplied to `locale check`.
+        string tempDir = Path.Combine(Path.GetTempPath(), $"locale_check_neutral_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            // German neutral file — base
+            File.WriteAllText(Path.Combine(tempDir, "Resources.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hallo</value></data>
+                </root>
+                """);
+
+            // English file with an orphan key
+            File.WriteAllText(Path.Combine(tempDir, "Resources.en.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hello</value></data>
+                  <data name="Orphan"><value>Not in base</value></data>
+                </root>
+                """);
+
+            CheckOptions options = new()
+            {
+                Rules = [CheckRules.NoOrphanKeys],
+                BaseCulture = "de"
+            };
+
+            CheckReport report = _service.Check(tempDir, options);
+
+            CheckViolation violation = Assert.Single(report.Violations);
+            Assert.Equal(CheckRules.NoOrphanKeys, violation.RuleName);
+            Assert.Equal("Orphan", violation.Key);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
 }

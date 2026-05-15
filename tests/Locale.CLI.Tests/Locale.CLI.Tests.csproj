@@ -6,17 +6,18 @@
         <LangVersion>preview</LangVersion>
         <AnalysisLevel>preview</AnalysisLevel>
         <ImplicitUsings>enable</ImplicitUsings>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net11.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="xunit.v3" Version="4.0.0-pre.108" />
-        <PackageReference Include="coverlet.collector" Version="10.0.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0-pre.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.2.3" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.6.2" />
     </ItemGroup>
 
     <ItemGroup>

@@ -41,11 +41,28 @@ public class GenerateCommandTests
         };
 
         // Assert
-        Assert.Equal("en", settings.From);
+        // From and BaseLanguage default to null; Execute resolves to "en" when neither is set.
+        Assert.Null(settings.From);
+        Assert.Null(settings.BaseLanguage);
         Assert.Equal(".", settings.Input);
         Assert.Equal("@@MISSING@@ {0}", settings.Placeholder);
         Assert.False(settings.UseEmpty);
         Assert.False(settings.Overwrite);
         Assert.True(settings.Recursive);
+    }
+
+    [Fact]
+    public void GenerateSettings_BaseLanguage_IsConfigurable()
+    {
+        // Arrange & Act
+        GenerateSettings settings = new()
+        {
+            Target = "en",
+            BaseLanguage = "de"
+        };
+
+        // Assert
+        Assert.Equal("de", settings.BaseLanguage);
+        Assert.Null(settings.From);
     }
 }

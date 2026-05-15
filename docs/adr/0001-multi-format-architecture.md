@@ -20,7 +20,7 @@ The Locale project needs to support multiple localization file formats (JSON, YA
 
 **Constraints:**
 
-- .NET ecosystem (targeting .NET 8, 9, 10)
+- .NET ecosystem (targeting .NET 8, 9, 10, 11)
 - Must be performant for large files (10,000+ entries)
 - Must preserve data integrity during conversions
 - Limited dependencies (prefer built-in .NET libraries)

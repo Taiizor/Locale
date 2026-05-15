@@ -19,11 +19,19 @@ public sealed class GenerateSettings : CommandSettings
 
     /// <summary>
     /// Gets or sets the base culture to generate from.
+    /// When omitted, falls back to <see cref="BaseLanguage"/> if set, otherwise 'en'.
     /// </summary>
-    [Description("Base culture to generate from.")]
+    [Description("Base culture to generate from. Defaults to --base when set, otherwise 'en'.")]
     [CommandOption("-f|--from")]
-    [DefaultValue("en")]
-    public string From { get; set; } = "en";
+    public string? From { get; set; }
+
+    /// <summary>
+    /// Gets or sets the base/neutral language alias.
+    /// Equivalent to <see cref="From"/> but emphasises that base files may not have a culture suffix.
+    /// </summary>
+    [Description("Base/neutral language alias. Files without a culture suffix are treated as this language.")]
+    [CommandOption("-b|--base")]
+    public string? BaseLanguage { get; set; }
 
     /// <summary>
     /// Gets or sets the input directory or file.
@@ -88,10 +96,13 @@ public sealed class GenerateCommand : Command<GenerateSettings>
     {
         GenerateService service = new();
 
+        // --from defaults to --base when set, otherwise 'en'.
+        string baseCulture = settings.From ?? settings.BaseLanguage ?? "en";
+
         GenerateOptions options = new()
         {
             TargetCulture = settings.Target,
-            BaseCulture = settings.From,
+            BaseCulture = baseCulture,
             Recursive = settings.Recursive,
             UseEmptyValue = settings.UseEmpty,
             OverwriteExisting = settings.Overwrite,
@@ -100,7 +111,7 @@ public sealed class GenerateCommand : Command<GenerateSettings>
 
         string outputPath = settings.Output ?? settings.Input;
 
-        AnsiConsole.MarkupLine($"[bold]Generating[/] {settings.Target} files from {settings.From}...");
+        AnsiConsole.MarkupLine($"[bold]Generating[/] {settings.Target} files from {baseCulture}...");
         AnsiConsole.MarkupLine($"[dim]Input:[/] {settings.Input}");
         AnsiConsole.MarkupLine($"[dim]Output:[/] {outputPath}");
 

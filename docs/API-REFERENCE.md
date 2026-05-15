@@ -528,6 +528,11 @@ public sealed class TranslateOptions
     public string? ApiEndpoint { get; set; }
     public required string SourceLanguage { get; set; }
     public required string TargetLanguage { get; set; }
+
+    // Base/neutral language. When set, files without a detected culture suffix
+    // (e.g. Resources.resx) are treated as having this culture.
+    public string? BaseLanguage { get; set; }
+
     public bool OverwriteExisting { get; set; }
     public bool OnlyMissing { get; set; } = true;
     public bool Recursive { get; set; } = true;
@@ -536,6 +541,13 @@ public sealed class TranslateOptions
     public int DegreeOfParallelism { get; set; } = 1;
 }
 ```
+
+> **Neutral / base language note:** `ScanService`, `CheckService`, and
+> `GenerateService` also recognise files without a culture suffix as
+> belonging to the configured `BaseCulture`. This lets you point the tools
+> at .NET-style projects where the neutral resource file (e.g.
+> `Resources.resx`) holds the base-language strings and `Resources.en.resx`,
+> `Resources.es.resx`, etc. hold the translations.
 
 **Example:**
 ```csharp
@@ -560,6 +572,16 @@ await service.TranslateAsync("./locales", new TranslateOptions
     TargetLanguage = "de",
     DegreeOfParallelism = 5, // Parallel processing
     DelayBetweenCalls = 500
+});
+
+// Project with German neutral file (Resources.resx, no culture suffix)
+await service.TranslateAsync("./Resources", new TranslateOptions
+{
+    Provider = TranslationProvider.LibreTranslate,
+    ApiEndpoint = "http://localhost:5050",
+    SourceLanguage = "de",
+    TargetLanguage = "en",
+    BaseLanguage = "de" // Treats Resources.resx as the German source file
 });
 ```
 

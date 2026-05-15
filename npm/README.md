@@ -123,6 +123,21 @@ locale translate tr --from en --in ./locales --parallel 5 --delay 500
 - Increase `--delay` if you hit API rate limits
 - Sequential mode (`--parallel 1`) is safest for strict rate-limited APIs
 
+### 🌍 Non-English Base Language
+
+If your project's neutral resource file is not English (e.g. a .NET project
+with `Resources.resx` in German and `Resources.en.resx` for the English
+translation), pass `--base` so suffix-less files are recognised:
+
+```bash
+locale translate en --base de --in ./Resources --provider google
+locale generate fr --base de --in ./Resources
+locale scan ./Resources --base de --targets en,es
+```
+
+When `--base` is set and `--from` is omitted, `--from` defaults to the base
+value.
+
 ## 📁 Supported Formats
 
 | Format | Extensions | Description |

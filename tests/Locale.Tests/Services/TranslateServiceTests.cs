@@ -65,4 +65,66 @@ public class TranslateServiceTests
 
         Assert.Equal(1, options.DegreeOfParallelism);
     }
+
+    [Fact]
+    public void TranslateOptions_BaseLanguage_DefaultsToNull()
+    {
+        TranslateOptions options = new()
+        {
+            SourceLanguage = "en",
+            TargetLanguage = "tr"
+        };
+
+        Assert.Null(options.BaseLanguage);
+    }
+
+    [Fact]
+    public void TranslateOptions_BaseLanguage_IsConfigurable()
+    {
+        TranslateOptions options = new()
+        {
+            SourceLanguage = "de",
+            TargetLanguage = "en",
+            BaseLanguage = "de"
+        };
+
+        Assert.Equal("de", options.BaseLanguage);
+    }
+
+    [Fact]
+    public async Task TranslateAsync_NeutralFileWithoutBaseLanguage_IsSkipped()
+    {
+        // Issue #24: a neutral Resources.resx (no culture suffix) is currently
+        // skipped when --base is not supplied because the detected culture is
+        // null and cannot match the source language.
+        string tempDir = Path.Combine(Path.GetTempPath(), $"locale_translate_neutral_skip_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            File.WriteAllText(Path.Combine(tempDir, "Resources.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hallo</value></data>
+                </root>
+                """);
+
+            using TranslateService service = new();
+            TranslateOptions options = new()
+            {
+                SourceLanguage = "de",
+                TargetLanguage = "en"
+                // BaseLanguage intentionally not set
+            };
+
+            List<TranslateResult> results = await service.TranslateAsync(tempDir, tempDir, options, TestContext.Current.CancellationToken);
+
+            // No file matches "de" because the neutral file's detected culture is null.
+            Assert.Empty(results);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
 }

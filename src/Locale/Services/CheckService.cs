@@ -206,14 +206,13 @@ public sealed class CheckService(FormatRegistry registry)
 
     private static void CheckOrphanKeys(List<LocalizationFile> files, string baseCulture, CheckReport report)
     {
-        List<LocalizationFile> baseFiles = [.. files.Where(f =>
-            f.Culture?.Equals(baseCulture, StringComparison.OrdinalIgnoreCase) == true)];
+        List<LocalizationFile> baseFiles = [.. files.Where(f => IsBaseFile(f, baseCulture))];
 
         HashSet<string> baseKeys = [.. baseFiles.SelectMany(f => f.Entries.Select(e => e.Key))];
 
         foreach (LocalizationFile file in files)
         {
-            if (file.Culture?.Equals(baseCulture, StringComparison.OrdinalIgnoreCase) == true)
+            if (IsBaseFile(file, baseCulture))
             {
                 continue;
             }
@@ -239,8 +238,7 @@ public sealed class CheckService(FormatRegistry registry)
     {
         Regex regex = PlaceholderHelper.GetRegex(pattern);
 
-        List<LocalizationFile> baseFiles = [.. files.Where(f =>
-            f.Culture?.Equals(baseCulture, StringComparison.OrdinalIgnoreCase) == true)];
+        List<LocalizationFile> baseFiles = [.. files.Where(f => IsBaseFile(f, baseCulture))];
 
         Dictionary<string, List<string>> baseEntries = [];
         foreach (LocalizationFile file in baseFiles)
@@ -254,7 +252,7 @@ public sealed class CheckService(FormatRegistry registry)
 
         foreach (LocalizationFile file in files)
         {
-            if (file.Culture?.Equals(baseCulture, StringComparison.OrdinalIgnoreCase) == true)
+            if (IsBaseFile(file, baseCulture))
             {
                 continue;
             }
@@ -281,6 +279,21 @@ public sealed class CheckService(FormatRegistry registry)
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Determines whether a file should be treated as a base-culture file. A file matches if
+    /// its detected culture equals the base culture, or if no culture was detected (e.g. a
+    /// neutral <c>Resources.resx</c>) and the user supplied a base culture explicitly.
+    /// </summary>
+    private static bool IsBaseFile(LocalizationFile file, string baseCulture)
+    {
+        if (string.IsNullOrEmpty(file.Culture))
+        {
+            return !string.IsNullOrEmpty(baseCulture);
+        }
+
+        return file.Culture.Equals(baseCulture, StringComparison.OrdinalIgnoreCase);
     }
 
     private List<LocalizationFile> DiscoverFiles(string path, bool recursive)

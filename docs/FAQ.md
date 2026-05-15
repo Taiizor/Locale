@@ -28,7 +28,7 @@ Locale is a comprehensive multi-format localization library and CLI tool for .NE
 - **Auto-translation:** Built-in support for 10 translation providers including AI models
 - **CLI and library:** Use as a command-line tool or integrate into your .NET applications
 - **Cross-platform:** Works on Windows, macOS, and Linux
-- **Modern .NET:** Built with .NET 8/9/10, nullable reference types, and latest C# features
+- **Modern .NET:** Built with .NET 8/9/10/11 (preview), nullable reference types, and latest C# features
 
 ### Is Locale free?
 
@@ -36,7 +36,10 @@ Yes, Locale is open-source and licensed under the MIT License. It's completely f
 
 ### Which .NET versions are supported?
 
-Locale targets .NET 8.0, 9.0, and 10.0. You need at least .NET 8.0 SDK installed to use it.
+Locale targets .NET 8.0, 9.0, 10.0, and 11.0 (preview). You need at least
+.NET 8.0 runtime installed to *use* the library or CLI; building from source
+requires the .NET 11 SDK (preview) to compile every target framework at
+once.
 
 ### Can I use Locale with non-.NET projects?
 
@@ -198,6 +201,32 @@ Locale looks for culture codes in filenames:
 - `messages.en.json` - name.culture.ext
 - `messages_en.json` - name_culture.ext
 - `en-US.json` - culture-region.ext
+
+Files **without** a culture suffix (e.g. `Resources.resx`) are treated as
+"neutral". By default they are skipped, but if you pass `--base <culture>`
+they are folded into the base culture group. See the next entry.
+
+### My project's neutral resource file is not English — how do I tell Locale?
+
+Many .NET projects keep the base-language strings in a suffix-less file
+(e.g. `Resources.resx` in German) and put translations in
+`Resources.en.resx`, `Resources.es.resx`, etc. Use `--base` to declare the
+neutral language explicitly:
+
+```bash
+# Layout:
+#   Resources.resx        (German, neutral / base)
+#   Resources.en.resx     (English)
+#   Resources.es.resx     (Spanish)
+
+# Scan, check, watch, generate, and translate all accept --base:
+locale scan ./Resources --base de --targets en,es
+locale generate fr --base de --in ./Resources
+locale translate en --base de --in ./Resources --provider google
+```
+
+When `--base` is set and `--from` is omitted, `--from` defaults to the value
+of `--base`.
 
 ### What happens to nested JSON/YAML structures?
 

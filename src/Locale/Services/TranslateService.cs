@@ -65,6 +65,14 @@ public sealed class TranslateOptions
     public required string TargetLanguage { get; set; }
 
     /// <summary>
+    /// Gets or sets the base/neutral language of the project.
+    /// When set, files without a detected culture suffix (e.g. <c>Resources.resx</c>)
+    /// are treated as having this culture. Useful for projects where the neutral
+    /// resource file is in a non-English language.
+    /// </summary>
+    public string? BaseLanguage { get; set; }
+
+    /// <summary>
     /// Gets or sets whether to overwrite existing translations.
     /// </summary>
     public bool OverwriteExisting { get; set; }
@@ -205,8 +213,16 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
                 continue;
             }
 
+            // Determine effective culture: when a file has no detected culture
+            // (e.g. neutral Resources.resx), treat it as the configured base language.
+            string? effectiveCulture = sourceFile.Culture;
+            if (string.IsNullOrEmpty(effectiveCulture) && !string.IsNullOrEmpty(options.BaseLanguage))
+            {
+                effectiveCulture = options.BaseLanguage;
+            }
+
             // Check if this is a source language file
-            if (sourceFile.Culture?.Equals(options.SourceLanguage, StringComparison.OrdinalIgnoreCase) != true)
+            if (effectiveCulture?.Equals(options.SourceLanguage, StringComparison.OrdinalIgnoreCase) != true)
             {
                 continue;
             }

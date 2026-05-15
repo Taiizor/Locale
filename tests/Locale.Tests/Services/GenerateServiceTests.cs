@@ -436,4 +436,38 @@ public class GenerateServiceTests : IDisposable
         // Assert
         Assert.False(result.Success);
     }
+
+    [Fact]
+    public void Generate_NeutralResxAsBase_GeneratesTargetFile()
+    {
+        // Issue #24: A neutral Resources.resx (no culture suffix) holding the
+        // base-language strings should be picked up when --base/--from is set.
+        string baseFile = Path.Combine(_testDir, "Resources.resx");
+
+        File.WriteAllText(baseFile, """
+            <?xml version="1.0" encoding="utf-8"?>
+            <root>
+              <data name="Welcome"><value>Willkommen</value></data>
+              <data name="Goodbye"><value>Auf Wiedersehen</value></data>
+            </root>
+            """);
+
+        GenerateOptions options = new()
+        {
+            BaseCulture = "de",
+            TargetCulture = "en",
+            UseEmptyValue = true
+        };
+
+        List<GenerateResult> results = _service.Generate(_testDir, _testDir, options);
+
+        GenerateResult result = Assert.Single(results);
+        Assert.True(result.Success);
+        Assert.True(result.Created);
+        Assert.Equal(2, result.KeysAdded);
+
+        // The output filename follows the suffix-less pattern: Resources.en.resx
+        Assert.Equal("Resources.en.resx", Path.GetFileName(result.FilePath));
+        Assert.True(File.Exists(result.FilePath));
+    }
 }

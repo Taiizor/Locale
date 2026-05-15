@@ -56,7 +56,7 @@ The CLI tool provides:
 
 ### Prerequisites
 
-- .NET 10.0 SDK or later
+- .NET 11.0 SDK (preview) — required to build all target frameworks (`net8.0`, `net9.0`, `net10.0`, `net11.0`)
 - Your favorite IDE (Visual Studio, VS Code, Rider)
 
 ### Building from Source

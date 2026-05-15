@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `--base` / `BaseLanguage` option for projects with a non-English neutral language (e.g. .NET projects where `Resources.resx` holds German strings and `Resources.en.resx` is the English translation). Files without a culture suffix are now treated as belonging to the configured base culture across `translate`, `generate`, `scan`, `check`, and `watch` commands. When `--base` is set and `--from` is omitted, `--from` defaults to the base value. ([#24](https://github.com/Taiizor/Locale/issues/24))
+
 ### Performance
 - Optimized `LocalizationFile.GetValue()` and `ContainsKey()` methods to use cached dictionary instead of linear search, improving lookup performance from O(n) to O(1)
 

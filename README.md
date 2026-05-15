@@ -144,6 +144,9 @@ locale generate tr --from en --in ./locales --out ./locales
 
 # Generate with empty values
 locale generate de --from en --in ./locales --empty
+
+# Project with German neutral file (Resources.resx) — generate English skeleton
+locale generate en --base de --in ./Resources --empty
 ```
 
 ### `locale watch` - Monitor Changes
@@ -170,7 +173,39 @@ locale translate tr --from en --in ./locales --provider ollama --model llama3.2
 
 # Parallel translation (5 concurrent requests with 500ms delay)
 locale translate tr --from en --in ./locales --parallel 5 --delay 500
+
+# Project with non-English neutral language (e.g. Resources.resx in German)
+# --base treats files without a culture suffix as the base language
+# and is also used as the default for --from
+locale translate en --base de --in ./Resources --provider libretranslate --endpoint http://localhost:5050
 ```
+
+<details>
+<summary><strong>🌍 Non-English Base Language (`--base`)</strong></summary>
+
+Many .NET projects use a non-English neutral language. The base resource file
+has no culture suffix:
+
+```
+Resources.resx        # German (neutral / base)
+Resources.en.resx     # English translations
+Resources.es.resx     # Spanish translations
+```
+
+Use `--base` to tell Locale that suffix-less files belong to a specific culture:
+
+```bash
+# scan, check, watch, generate, and translate all accept --base
+locale scan ./Resources --base de --targets en,es
+locale check ./Resources --base de
+locale generate fr --base de --in ./Resources
+locale translate en --base de --in ./Resources --provider google
+```
+
+When `--base` is set and `--from` is omitted, `--from` defaults to the value of
+`--base`.
+
+</details>
 
 <details>
 <summary><strong>⚡ Parallel Translation Options</strong></summary>

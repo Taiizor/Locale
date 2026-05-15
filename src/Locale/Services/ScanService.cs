@@ -59,7 +59,7 @@ public sealed class ScanService(FormatRegistry registry)
     public ScanReport Scan(string path, ScanOptions options)
     {
         IEnumerable<LocalizationFile> files = DiscoverFiles(path, options);
-        Dictionary<string, List<LocalizationFile>> filesByCulture = GroupFilesByCulture(files);
+        Dictionary<string, List<LocalizationFile>> filesByCulture = GroupFilesByCulture(files, options.BaseCulture);
 
         if (!filesByCulture.TryGetValue(options.BaseCulture.ToLowerInvariant(), out List<LocalizationFile>? baseFiles))
         {
@@ -158,16 +158,25 @@ public sealed class ScanService(FormatRegistry registry)
         }
     }
 
-    private Dictionary<string, List<LocalizationFile>> GroupFilesByCulture(IEnumerable<LocalizationFile> files)
+    private Dictionary<string, List<LocalizationFile>> GroupFilesByCulture(IEnumerable<LocalizationFile> files, string? baseCultureFallback = null)
     {
         Dictionary<string, List<LocalizationFile>> result = new(StringComparer.OrdinalIgnoreCase);
+        string? fallback = baseCultureFallback?.ToLowerInvariant();
 
         foreach (LocalizationFile file in files)
         {
             string? culture = file.Culture?.ToLowerInvariant();
+
+            // Treat files without a detected culture (e.g. neutral Resources.resx)
+            // as belonging to the configured base culture when one is provided.
             if (string.IsNullOrEmpty(culture))
             {
-                continue;
+                if (string.IsNullOrEmpty(fallback))
+                {
+                    continue;
+                }
+
+                culture = fallback;
             }
 
             if (!result.TryGetValue(culture, out List<LocalizationFile>? list))

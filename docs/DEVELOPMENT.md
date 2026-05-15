@@ -20,9 +20,10 @@ Complete guide for setting up and developing Locale.
 
 ### Required
 
-- **.NET SDK 10.0** or later
-  - Download from: <https://dotnet.microsoft.com/download>
-  - Verify: `dotnet --version` should show 10.0.x or later
+- **.NET SDK 11.0 (preview)** — required to build all target frameworks (`net8.0`, `net9.0`, `net10.0`, `net11.0`)
+  - Download from: <https://dotnet.microsoft.com/download/dotnet/11.0>
+  - Verify: `dotnet --version` should show `11.0.x` or later
+  - For development without preview, you can drop `net11.0` from `TargetFrameworks` in the csproj files and use the .NET 10 SDK.
 
 ### Recommended
 
@@ -74,7 +75,7 @@ dotnet run --project src/Locale.CLI -- scan ./samples --base en
 
 # Or build and use the executable
 dotnet build src/Locale.CLI
-./src/Locale.CLI/bin/Debug/net10.0/Locale.CLI scan ./samples --base en
+./src/Locale.CLI/bin/Debug/net11.0/Locale.CLI scan ./samples --base en
 ```
 
 ---
@@ -182,6 +183,7 @@ dotnet build
 ### Build with Specific Target Framework
 
 ```bash
+dotnet build --framework net11.0
 dotnet build --framework net10.0
 dotnet build --framework net9.0
 dotnet build --framework net8.0
@@ -288,7 +290,7 @@ Create `.vscode/launch.json`:
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/src/Locale.CLI/bin/Debug/net10.0/Locale.CLI.dll",
+      "program": "${workspaceFolder}/src/Locale.CLI/bin/Debug/net11.0/Locale.CLI.dll",
       "args": ["scan", "./samples", "--base", "en"],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,

@@ -335,4 +335,103 @@ public class ScanServiceTests
             Directory.Delete(tempDir, true);
         }
     }
+
+    [Fact]
+    public void Scan_NeutralResxAsBase_RecognisesFileAsBaseCulture()
+    {
+        // Issue #24: Projects with a non-English neutral language store base
+        // strings in Resources.resx (no culture suffix) and translations in
+        // Resources.en.resx, Resources.es.resx, etc. The base file should be
+        // discovered as the configured base culture.
+        string tempDir = Path.Combine(Path.GetTempPath(), $"locale_scan_neutral_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            // Neutral base file (German) — no culture suffix
+            File.WriteAllText(Path.Combine(tempDir, "Resources.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hallo</value></data>
+                  <data name="World"><value>Welt</value></data>
+                  <data name="Goodbye"><value>Auf Wiedersehen</value></data>
+                </root>
+                """);
+
+            // English translation, missing one key
+            File.WriteAllText(Path.Combine(tempDir, "Resources.en.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hello</value></data>
+                  <data name="World"><value>World</value></data>
+                </root>
+                """);
+
+            ScanOptions options = new()
+            {
+                BaseCulture = "de",
+                TargetCultures = ["en"],
+                Recursive = false
+            };
+
+            ScanReport report = _service.Scan(tempDir, options);
+
+            CultureComparisonResult enResult = Assert.Single(report.Results);
+            Assert.Equal("en", enResult.Culture);
+            Assert.Single(enResult.MissingKeys);
+            Assert.Equal("Goodbye", enResult.MissingKeys[0]);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
+
+    [Fact]
+    public void Scan_NeutralFileWithoutBaseCultureMatch_StillIgnored()
+    {
+        // When BaseCulture is set but a neutral file's content does not match,
+        // the file is grouped under BaseCulture. Any non-base culture files
+        // remain comparable. This guards against losing files entirely.
+        string tempDir = Path.Combine(Path.GetTempPath(), $"locale_scan_neutral_no_base_{Guid.NewGuid():N}");
+        Directory.CreateDirectory(tempDir);
+
+        try
+        {
+            // Suffix-less file present, but BaseCulture targets a different value
+            File.WriteAllText(Path.Combine(tempDir, "Resources.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hallo</value></data>
+                </root>
+                """);
+
+            File.WriteAllText(Path.Combine(tempDir, "Resources.en.resx"), """
+                <?xml version="1.0" encoding="utf-8"?>
+                <root>
+                  <data name="Hello"><value>Hello</value></data>
+                </root>
+                """);
+
+            // BaseCulture is "fr" — neutral file gets folded into "fr" group,
+            // but no actual French translations exist for comparison.
+            ScanOptions options = new()
+            {
+                BaseCulture = "fr",
+                TargetCultures = ["en"],
+                Recursive = false
+            };
+
+            ScanReport report = _service.Scan(tempDir, options);
+
+            // Neutral file is treated as fr base, en is compared against it.
+            CultureComparisonResult enResult = Assert.Single(report.Results);
+            Assert.Equal("en", enResult.Culture);
+            Assert.Empty(enResult.MissingKeys);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, true);
+        }
+    }
 }

@@ -19,10 +19,19 @@ public sealed class TranslateSettings : CommandSettings
 
     /// <summary>
     /// Gets or sets the source language to translate from.
+    /// When omitted, falls back to <see cref="BaseLanguage"/> if set, otherwise 'en'.
     /// </summary>
-    [Description("Source language to translate from.")]
+    [Description("Source language to translate from. Defaults to --base when set, otherwise 'en'.")]
     [CommandOption("-f|--from")]
-    public string SourceLanguage { get; set; } = "en";
+    public string? SourceLanguage { get; set; }
+
+    /// <summary>
+    /// Gets or sets the base/neutral language of the project.
+    /// Files without a culture suffix (e.g. 'Resources.resx') are treated as having this culture.
+    /// </summary>
+    [Description("Base/neutral language. Files without a culture suffix are treated as this language. Also defaults --from to this value.")]
+    [CommandOption("-b|--base")]
+    public string? BaseLanguage { get; set; }
 
     /// <summary>
     /// Gets or sets the input directory or file.
@@ -149,13 +158,17 @@ public sealed class TranslateCommand : AsyncCommand<TranslateSettings>
 
         string outputPath = settings.OutputPath ?? settings.InputPath;
 
+        // --from defaults to --base when set, otherwise 'en'.
+        string sourceLanguage = settings.SourceLanguage ?? settings.BaseLanguage ?? "en";
+
         TranslateOptions options = new()
         {
             Provider = provider,
             ApiKey = settings.ApiKey,
             ApiEndpoint = settings.ApiEndpoint,
-            SourceLanguage = settings.SourceLanguage,
+            SourceLanguage = sourceLanguage,
             TargetLanguage = settings.Target,
+            BaseLanguage = settings.BaseLanguage,
             OverwriteExisting = settings.Overwrite,
             OnlyMissing = settings.OnlyMissing,
             Recursive = settings.Recursive,
@@ -164,7 +177,11 @@ public sealed class TranslateCommand : AsyncCommand<TranslateSettings>
             DegreeOfParallelism = settings.DegreeOfParallelism
         };
 
-        AnsiConsole.MarkupLine($"[bold]Translating[/] from [cyan]{settings.SourceLanguage}[/] to [cyan]{settings.Target}[/]");
+        AnsiConsole.MarkupLine($"[bold]Translating[/] from [cyan]{sourceLanguage}[/] to [cyan]{settings.Target}[/]");
+        if (!string.IsNullOrEmpty(settings.BaseLanguage))
+        {
+            AnsiConsole.MarkupLine($"[dim]Base language:[/] {settings.BaseLanguage}");
+        }
         AnsiConsole.MarkupLine($"[dim]Provider:[/] {provider}");
         if (!string.IsNullOrEmpty(settings.Model))
         {
