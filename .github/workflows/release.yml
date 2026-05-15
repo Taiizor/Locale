@@ -25,9 +25,10 @@ jobs:
             rid: linux-x64
           - os: ubuntu-latest
             rid: linux-arm64
-          - os: windows-latest
+          # Pinned to windows-2025-vs2026 ahead of GitHub's June 15, 2026 redirect.
+          - os: windows-2025-vs2026
             rid: win-x64
-          - os: windows-latest
+          - os: windows-2025-vs2026
             rid: win-arm64
           - os: macos-latest
             rid: osx-x64

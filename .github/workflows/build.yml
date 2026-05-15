@@ -32,7 +32,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Pinned to windows-2025-vs2026 ahead of GitHub's June 15, 2026 redirect
+        # of the windows-latest alias.
+        os: [ubuntu-latest, windows-2025-vs2026, macos-latest]
         dotnet-version: ['11.0.x']
 
     steps:
