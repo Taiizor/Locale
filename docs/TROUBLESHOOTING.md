@@ -417,11 +417,11 @@ python -c 'import yaml, sys; yaml.safe_load(sys.stdin)' < file.yaml
 
 1. **Use better models:**
    ```bash
-   # OpenAI - use GPT-4 instead of GPT-3.5
-   --provider openai --model gpt-4
+   # OpenAI - use GPT-5.5 instead of GPT-5.4-mini
+   --provider openai --model gpt-5.5
    
-   # Claude - use Claude 3 Opus
-   --provider claude --model claude-3-opus-20240229
+   # Claude - use Claude Opus 4.7 for highest quality
+   --provider claude --model claude-opus-4-7
    ```
 
 2. **Add context in keys:**
@@ -479,7 +479,7 @@ python -c 'import yaml, sys; yaml.safe_load(sys.stdin)' < file.yaml
    ollama list
    
    # Install model if needed
-   ollama pull llama3.2
+   ollama pull llama3.3
    ```
 
 ---
@@ -571,11 +571,11 @@ time locale scan ./locales --base en --targets tr,de
 
 3. **Use faster model:**
    ```bash
-   # OpenAI - use gpt-4o-mini instead of gpt-4
-   --provider openai --model gpt-4o-mini
+   # OpenAI - use gpt-5.4-nano instead of the full-size model
+   --provider openai --model gpt-5.4-nano
    
-   # Gemini - use flash model
-   --provider gemini --model gemini-2.0-flash
+   # Gemini - use the flash-lite model
+   --provider gemini --model gemini-2.5-flash-lite
    ```
 
 4. **Use local LLM:**

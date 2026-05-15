@@ -567,7 +567,7 @@ await service.TranslateAsync("./locales", new TranslateOptions
 {
     Provider = TranslationProvider.OpenAI,
     ApiKey = "sk-...",
-    Model = "gpt-4o-mini",
+    Model = "gpt-5.4-mini",
     SourceLanguage = "en",
     TargetLanguage = "de",
     DegreeOfParallelism = 5, // Parallel processing
@@ -642,11 +642,11 @@ service.Watch("./locales", new WatchOptions
 | Bing | ✅ Yes | - | Microsoft ecosystem |
 | Yandex | ✅ Yes | - | Slavic languages |
 | LibreTranslate | ⚪ Optional | - | Self-hosted, privacy |
-| OpenAI | ✅ Yes | `gpt-4o-mini` | Context-aware AI |
-| Claude | ✅ Yes | `claude-3-5-sonnet-latest` | Nuanced translations |
-| Gemini | ✅ Yes | `gemini-2.0-flash` | Fast AI translations |
+| OpenAI | ✅ Yes | `gpt-5.4-mini` | Context-aware AI |
+| Claude | ✅ Yes | `claude-sonnet-4-6` | Nuanced translations |
+| Gemini | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | Azure OpenAI | ✅ Yes | - | Enterprise deployments |
-| Ollama | ❌ No | `llama3.2` | Local, private LLM |
+| Ollama | ❌ No | `llama3.3` | Local, private LLM |
 
 ### Provider Configuration
 
@@ -677,7 +677,7 @@ var options = new TranslateOptions
 {
     Provider = TranslationProvider.OpenAI,
     ApiKey = "sk-...",
-    Model = "gpt-4o-mini", // or "gpt-4", "gpt-3.5-turbo"
+    Model = "gpt-5.4-mini", // or "gpt-5.5", "gpt-5.4-nano"
     SourceLanguage = "en",
     TargetLanguage = "fr",
     DegreeOfParallelism = 5
@@ -690,7 +690,7 @@ var options = new TranslateOptions
 {
     Provider = TranslationProvider.Claude,
     ApiKey = "your-claude-api-key",
-    Model = "claude-3-5-sonnet-latest",
+    Model = "claude-sonnet-4-6",
     SourceLanguage = "en",
     TargetLanguage = "es"
 };
@@ -702,7 +702,7 @@ var options = new TranslateOptions
 {
     Provider = TranslationProvider.Ollama,
     ApiEndpoint = "http://localhost:11434", // default
-    Model = "llama3.2", // or any installed model
+    Model = "llama3.3", // or any installed model
     SourceLanguage = "en",
     TargetLanguage = "it"
 };

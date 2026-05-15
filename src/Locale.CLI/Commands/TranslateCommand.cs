@@ -70,9 +70,10 @@ public sealed class TranslateSettings : CommandSettings
     public string? ApiEndpoint { get; set; }
 
     /// <summary>
-    /// Gets or sets the model name for AI providers (e.g., 'gpt-4o', 'claude-3-5-sonnet-latest', 'gemini-2.0-flash').
+    /// Gets or sets the model name for AI providers (e.g., 'gpt-5.4-mini',
+    /// 'claude-sonnet-4-6', 'gemini-2.5-flash', 'llama3.3').
     /// </summary>
-    [Description("Model name for AI providers (e.g., 'gpt-4o', 'claude-3-5-sonnet-latest', 'gemini-2.0-flash').")]
+    [Description("Model name for AI providers (e.g., 'gpt-5.4-mini', 'claude-sonnet-4-6', 'gemini-2.5-flash', 'llama3.3').")]
     [CommandOption("-m|--model")]
     public string? Model { get; set; }
 

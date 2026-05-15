@@ -524,7 +524,7 @@ var options = new TranslateOptions
 {
     Provider = TranslationProvider.OpenAI,
     ApiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY"),
-    Model = "gpt-4o-mini", // Faster and cheaper
+    Model = "gpt-5.4-mini", // Faster and cheaper
     SourceLanguage = "en",
     TargetLanguage = "tr",
     OnlyMissing = true,

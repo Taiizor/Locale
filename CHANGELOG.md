@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - `--base` / `BaseLanguage` option for projects with a non-English neutral language (e.g. .NET projects where `Resources.resx` holds German strings and `Resources.en.resx` is the English translation). Files without a culture suffix are now treated as belonging to the configured base culture across `translate`, `generate`, `scan`, `check`, and `watch` commands. When `--base` is set and `--from` is omitted, `--from` defaults to the base value. ([#24](https://github.com/Taiizor/Locale/issues/24))
 
+### Changed
+- Updated default models for AI translation providers to current 2026 generations:
+  - **OpenAI**: `gpt-4o-mini` → `gpt-5.4-mini` (gpt-4o was deprecated in February 2026)
+  - **Anthropic Claude**: `claude-3-5-sonnet-latest` → `claude-sonnet-4-6` (Claude 3.x family retired; new dateless pinned-snapshot format)
+  - **Google Gemini**: `gemini-2.0-flash` → `gemini-2.5-flash` (gemini-2.0-flash shuts down June 1, 2026)
+  - **Azure OpenAI**: `gpt-4` → `gpt-5.4-mini`
+  - **Ollama**: `llama3.2` → `llama3.3` (improved multilingual support)
+
 ### Performance
 - Optimized `LocalizationFile.GetValue()` and `ContainsKey()` methods to use cached dictionary instead of linear search, improving lookup performance from O(n) to O(1)
 

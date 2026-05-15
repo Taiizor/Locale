@@ -355,7 +355,7 @@ done
 
 2. **Use faster model:**
    ```bash
-   --provider openai --model gpt-4o-mini
+   --provider openai --model gpt-5.4-mini
    ```
 
 3. **Use local LLM:**

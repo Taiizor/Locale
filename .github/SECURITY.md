@@ -59,7 +59,7 @@ export OPENAI_API_KEY="your-key"
 locale translate tr --from en --in ./locales --provider openai --api-key $OPENAI_API_KEY
 
 # Good: Use local LLM for sensitive data
-locale translate tr --from en --in ./locales --provider ollama --model llama3.2
+locale translate tr --from en --in ./locales --provider ollama --model llama3.3
 ```
 
 ## Acknowledgments

@@ -90,11 +90,11 @@ generateService.Generate("./locales", "./locales", new GenerateOptions
 | Bing | ✅ | - |
 | Yandex | ✅ | - |
 | LibreTranslate | ⚪ | - |
-| OpenAI | ✅ | gpt-4o-mini |
-| Claude | ✅ | claude-3-5-sonnet-latest |
-| Gemini | ✅ | gemini-2.0-flash |
+| OpenAI | ✅ | gpt-5.4-mini |
+| Claude | ✅ | claude-sonnet-4-6 |
+| Gemini | ✅ | gemini-2.5-flash |
 | Azure OpenAI | ✅ | - |
-| Ollama | ❌ | llama3.2 |
+| Ollama | ❌ | llama3.3 |
 
 ## 📖 Documentation
 

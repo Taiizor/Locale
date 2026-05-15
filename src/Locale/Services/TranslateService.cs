@@ -93,7 +93,8 @@ public sealed class TranslateOptions
     public int DelayBetweenCalls { get; set; } = 100;
 
     /// <summary>
-    /// Gets or sets the model name for AI providers (e.g., 'gpt-4', 'claude-3-sonnet', 'gemini-pro').
+    /// Gets or sets the model name for AI providers (e.g., 'gpt-5.4-mini',
+    /// 'claude-sonnet-4-6', 'gemini-2.5-flash', 'llama3.3').
     /// </summary>
     public string? Model { get; set; }
 
@@ -613,7 +614,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         }
 
         string url = "https://api.openai.com/v1/chat/completions";
-        string modelName = string.IsNullOrEmpty(model) ? "gpt-4o-mini" : model;
+        string modelName = string.IsNullOrEmpty(model) ? "gpt-5.4-mini" : model;
 
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("Authorization", $"Bearer {apiKey}");
@@ -647,7 +648,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         }
 
         string url = "https://api.anthropic.com/v1/messages";
-        string modelName = string.IsNullOrEmpty(model) ? "claude-3-5-sonnet-latest" : model;
+        string modelName = string.IsNullOrEmpty(model) ? "claude-sonnet-4-6" : model;
 
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("x-api-key", apiKey);
@@ -680,7 +681,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
             throw new InvalidOperationException("Google Gemini API key is required");
         }
 
-        string modelName = string.IsNullOrEmpty(model) ? "gemini-2.0-flash" : model;
+        string modelName = string.IsNullOrEmpty(model) ? "gemini-2.5-flash" : model;
         string url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelName}:generateContent?key={apiKey}";
 
         var requestBody = new
@@ -721,7 +722,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
             throw new InvalidOperationException("Azure OpenAI endpoint is required");
         }
 
-        string deploymentName = string.IsNullOrEmpty(model) ? "gpt-4" : model;
+        string deploymentName = string.IsNullOrEmpty(model) ? "gpt-5.4-mini" : model;
         string url = $"{endpoint.TrimEnd('/')}/openai/deployments/{deploymentName}/chat/completions?api-version=2024-02-15-preview";
 
         using HttpRequestMessage request = new(HttpMethod.Post, url);
@@ -750,7 +751,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
     private async Task<string> TranslateWithOllamaAsync(string text, string sourceLang, string targetLang, string? endpoint, string? model, CancellationToken cancellationToken)
     {
         string url = string.IsNullOrEmpty(endpoint) ? "http://localhost:11434/api/generate" : $"{endpoint.TrimEnd('/')}/api/generate";
-        string modelName = string.IsNullOrEmpty(model) ? "llama3.2" : model;
+        string modelName = string.IsNullOrEmpty(model) ? "llama3.3" : model;
 
         var requestBody = new
         {

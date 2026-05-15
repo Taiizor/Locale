@@ -169,7 +169,7 @@ locale translate tr --from en --in ./locales --provider google
 locale translate tr --from en --in ./locales --provider openai --api-key YOUR_KEY
 
 # Local LLM with Ollama
-locale translate tr --from en --in ./locales --provider ollama --model llama3.2
+locale translate tr --from en --in ./locales --provider ollama --model llama3.3
 
 # Parallel translation (5 concurrent requests with 500ms delay)
 locale translate tr --from en --in ./locales --parallel 5 --delay 500
@@ -231,11 +231,11 @@ When `--base` is set and `--from` is omitted, `--from` defaults to the value of
 | 🔷 **Bing** | ✅ Yes | - | Microsoft ecosystem |
 | 🟡 **Yandex** | ✅ Yes | - | Slavic languages |
 | 🟢 **LibreTranslate** | ⚪ Optional | - | Self-hosted, privacy |
-| 🤖 **OpenAI** | ✅ Yes | `gpt-4o-mini` | Context-aware AI translation |
-| 🧠 **Claude** | ✅ Yes | `claude-3-5-sonnet-latest` | Nuanced translations |
-| ✨ **Gemini** | ✅ Yes | `gemini-2.0-flash` | Fast AI translations |
+| 🤖 **OpenAI** | ✅ Yes | `gpt-5.4-mini` | Context-aware AI translation |
+| 🧠 **Claude** | ✅ Yes | `claude-sonnet-4-6` | Nuanced translations |
+| ✨ **Gemini** | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | ☁️ **Azure OpenAI** | ✅ Yes | - | Enterprise deployments |
-| 🦙 **Ollama** | ❌ No | `llama3.2` | Local, private LLM |
+| 🦙 **Ollama** | ❌ No | `llama3.3` | Local, private LLM |
 
 ## 📁 Supported Formats
 

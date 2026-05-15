@@ -163,11 +163,11 @@ value.
 | 🔷 **Bing** | ✅ Yes | - | Microsoft ecosystem |
 | 🟡 **Yandex** | ✅ Yes | - | Slavic languages |
 | 🟢 **LibreTranslate** | ⚪ Optional | - | Self-hosted, privacy |
-| 🤖 **OpenAI** | ✅ Yes | `gpt-4o-mini` | Context-aware AI translation |
-| 🧠 **Claude** | ✅ Yes | `claude-3-5-sonnet-latest` | Nuanced translations |
-| ✨ **Gemini** | ✅ Yes | `gemini-2.0-flash` | Fast AI translations |
+| 🤖 **OpenAI** | ✅ Yes | `gpt-5.4-mini` | Context-aware AI translation |
+| 🧠 **Claude** | ✅ Yes | `claude-sonnet-4-6` | Nuanced translations |
+| ✨ **Gemini** | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | ☁️ **Azure OpenAI** | ✅ Yes | - | Enterprise deployments |
-| 🦙 **Ollama** | ❌ No | `llama3.2` | Local, private LLM |
+| 🦙 **Ollama** | ❌ No | `llama3.3` | Local, private LLM |
 
 ## 🔧 Alternative Installation
 
