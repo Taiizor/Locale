@@ -106,6 +106,11 @@ public sealed class TranslateOptions
     /// Higher values allow multiple translations to run concurrently.
     /// </summary>
     public int DegreeOfParallelism { get; set; } = 1;
+
+    /// <summary>
+    /// Gets or sets custom JSON parameters to include in the API request body.
+    /// </summary>
+    public string? CustomParameters { get; set; }
 }
 
 /// <summary>
@@ -477,15 +482,15 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         {
             TranslationProvider.Google => await TranslateWithGoogleAsync(text, sourceLanguage, targetLanguage, cancellationToken),
             TranslationProvider.DeepL => await TranslateWithDeepLAsync(text, sourceLanguage, targetLanguage, options.ApiKey, cancellationToken),
-            TranslationProvider.LibreTranslate => await TranslateWithLibreTranslateAsync(text, sourceLanguage, targetLanguage, options.ApiEndpoint, options.ApiKey, cancellationToken),
-            TranslationProvider.Yandex => await TranslateWithYandexAsync(text, sourceLanguage, targetLanguage, options.ApiKey, cancellationToken),
+            TranslationProvider.LibreTranslate => await TranslateWithLibreTranslateAsync(text, sourceLanguage, targetLanguage, options.ApiEndpoint, options.ApiKey, options.CustomParameters, cancellationToken),
+            TranslationProvider.Yandex => await TranslateWithYandexAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.CustomParameters, cancellationToken),
             TranslationProvider.Bing => await TranslateWithBingAsync(text, sourceLanguage, targetLanguage, options.ApiKey, cancellationToken),
-            TranslationProvider.OpenAI => await TranslateWithOpenAIAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
-            TranslationProvider.Claude => await TranslateWithClaudeAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
-            TranslationProvider.Gemini => await TranslateWithGeminiAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
-            TranslationProvider.AzureOpenAI => await TranslateWithAzureOpenAIAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.ApiEndpoint, options.Model, cancellationToken),
-            TranslationProvider.Ollama => await TranslateWithOllamaAsync(text, sourceLanguage, targetLanguage, options.ApiEndpoint, options.Model, cancellationToken),
-            TranslationProvider.Nvidia => await TranslateWithNvidiaAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
+            TranslationProvider.OpenAI => await TranslateWithOpenAIAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, options.CustomParameters, cancellationToken),
+            TranslationProvider.Claude => await TranslateWithClaudeAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, options.CustomParameters, cancellationToken),
+            TranslationProvider.Gemini => await TranslateWithGeminiAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, options.CustomParameters, cancellationToken),
+            TranslationProvider.AzureOpenAI => await TranslateWithAzureOpenAIAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.ApiEndpoint, options.Model, options.CustomParameters, cancellationToken),
+            TranslationProvider.Ollama => await TranslateWithOllamaAsync(text, sourceLanguage, targetLanguage, options.ApiEndpoint, options.Model, options.CustomParameters, cancellationToken),
+            TranslationProvider.Nvidia => await TranslateWithNvidiaAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, options.CustomParameters, cancellationToken),
             _ => throw new NotSupportedException($"Translation provider not supported: {options.Provider}")
         };
     }
@@ -540,17 +545,19 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Translations?.FirstOrDefault()?.Text ?? text;
     }
 
-    private async Task<string> TranslateWithLibreTranslateAsync(string text, string sourceLang, string targetLang, string? endpoint, string? apiKey, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithLibreTranslateAsync(string text, string sourceLang, string targetLang, string? endpoint, string? apiKey, string? customParams, CancellationToken cancellationToken)
     {
         string url = string.IsNullOrEmpty(endpoint) ? "https://libretranslate.com/translate" : $"{endpoint.TrimEnd('/')}/translate";
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            q = text,
-            source = sourceLang,
-            target = targetLang,
-            api_key = apiKey
+            ["q"] = text,
+            ["source"] = sourceLang,
+            ["target"] = targetLang,
+            ["api_key"] = apiKey ?? string.Empty
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -559,7 +566,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.TranslatedText ?? text;
     }
 
-    private async Task<string> TranslateWithYandexAsync(string text, string sourceLang, string targetLang, string? apiKey, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithYandexAsync(string text, string sourceLang, string targetLang, string? apiKey, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -571,12 +578,14 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("Authorization", $"Api-Key {apiKey}");
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            sourceLanguageCode = sourceLang,
-            targetLanguageCode = targetLang,
-            texts = new[] { text }
+            ["sourceLanguageCode"] = sourceLang,
+            ["targetLanguageCode"] = targetLang,
+            ["texts"] = new[] { text }
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         request.Content = JsonContent.Create(requestBody);
 
@@ -609,7 +618,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.FirstOrDefault()?.Translations?.FirstOrDefault()?.Text ?? text;
     }
 
-    private async Task<string> TranslateWithOpenAIAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithOpenAIAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -622,17 +631,19 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("Authorization", $"Bearer {apiKey}");
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            model = modelName,
-            messages = new[]
+            ["model"] = modelName,
+            ["messages"] = new[]
             {
                 new { role = "system", content = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text." },
                 new { role = "user", content = text }
             },
-            temperature = 0.3,
-            max_tokens = 4096
+            ["temperature"] = 0.3,
+            ["max_tokens"] = 4096
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         request.Content = JsonContent.Create(requestBody);
 
@@ -643,7 +654,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Choices?.FirstOrDefault()?.Message?.Content?.Trim() ?? text;
     }
 
-    private async Task<string> TranslateWithClaudeAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithClaudeAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -657,16 +668,18 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         request.Headers.Add("x-api-key", apiKey);
         request.Headers.Add("anthropic-version", "2023-06-01");
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            model = modelName,
-            max_tokens = 4096,
-            system = $"You are a professional translator. Translate text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text.",
-            messages = new[]
+            ["model"] = modelName,
+            ["max_tokens"] = 4096,
+            ["system"] = $"You are a professional translator. Translate text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text.",
+            ["messages"] = new[]
             {
                 new { role = "user", content = text }
             }
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         request.Content = JsonContent.Create(requestBody);
 
@@ -677,7 +690,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Content?.FirstOrDefault()?.Text?.Trim() ?? text;
     }
 
-    private async Task<string> TranslateWithGeminiAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithGeminiAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -687,9 +700,9 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         string modelName = string.IsNullOrEmpty(model) ? "gemini-2.5-flash" : model;
         string url = $"https://generativelanguage.googleapis.com/v1beta/models/{modelName}:generateContent?key={apiKey}";
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            contents = new[]
+            ["contents"] = new[]
             {
                 new
                 {
@@ -699,12 +712,14 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
                     }
                 }
             },
-            generationConfig = new
+            ["generationConfig"] = new
             {
                 temperature = 0.3,
                 maxOutputTokens = 4096
             }
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -713,7 +728,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text?.Trim() ?? text;
     }
 
-    private async Task<string> TranslateWithAzureOpenAIAsync(string text, string sourceLang, string targetLang, string? apiKey, string? endpoint, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithAzureOpenAIAsync(string text, string sourceLang, string targetLang, string? apiKey, string? endpoint, string? model, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -731,16 +746,18 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("api-key", apiKey);
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            messages = new[]
+            ["messages"] = new[]
             {
                 new { role = "system", content = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text." },
                 new { role = "user", content = text }
             },
-            temperature = 0.3,
-            max_tokens = 4096
+            ["temperature"] = 0.3,
+            ["max_tokens"] = 4096
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         request.Content = JsonContent.Create(requestBody);
 
@@ -751,21 +768,23 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Choices?.FirstOrDefault()?.Message?.Content?.Trim() ?? text;
     }
 
-    private async Task<string> TranslateWithOllamaAsync(string text, string sourceLang, string targetLang, string? endpoint, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithOllamaAsync(string text, string sourceLang, string targetLang, string? endpoint, string? model, string? customParams, CancellationToken cancellationToken)
     {
         string url = string.IsNullOrEmpty(endpoint) ? "http://localhost:11434/api/generate" : $"{endpoint.TrimEnd('/')}/api/generate";
         string modelName = string.IsNullOrEmpty(model) ? "llama3.3" : model;
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            model = modelName,
-            prompt = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text.\n\n{text}",
-            stream = false,
-            options = new
+            ["model"] = modelName,
+            ["prompt"] = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text.\n\n{text}",
+            ["stream"] = false,
+            ["options"] = new
             {
                 temperature = 0.3
             }
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         HttpResponseMessage response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -774,7 +793,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Response?.Trim() ?? text;
     }
 
-    private async Task<string> TranslateWithNvidiaAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, CancellationToken cancellationToken)
+    private async Task<string> TranslateWithNvidiaAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, string? customParams, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(apiKey))
         {
@@ -788,17 +807,19 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         using HttpRequestMessage request = new(HttpMethod.Post, url);
         request.Headers.Add("Authorization", $"Bearer {apiKey}");
 
-        var requestBody = new
+        Dictionary<string, object> requestBody = new()
         {
-            model = modelName,
-            messages = new[]
+            ["model"] = modelName,
+            ["messages"] = new[]
             {
                 new { role = "system", content = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text." },
                 new { role = "user", content = text }
             },
-            temperature = 0.3,
-            max_tokens = 4096
+            ["temperature"] = 0.3,
+            ["max_tokens"] = 4096
         };
+
+        ApplyCustomParameters(requestBody, customParams);
 
         request.Content = JsonContent.Create(requestBody);
 
@@ -822,6 +843,44 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
 
         _disposed = true;
         _httpClient.Dispose();
+    }
+
+    internal static void ApplyCustomParameters(Dictionary<string, object> requestBody, string? customParametersJson)
+    {
+        if (string.IsNullOrWhiteSpace(customParametersJson))
+        {
+            return;
+        }
+
+        // Try to handle common CLI mistake: using single quotes for JSON instead of double quotes
+        // because of shell escaping difficulties. Note: this is a simple heuristic.
+        string json = customParametersJson;
+        if (!json.Contains('"') && json.Contains('\''))
+        {
+            json = json.Replace('\'', '"');
+        }
+
+        try
+        {
+            JsonSerializerOptions options = new()
+            {
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            };
+
+            Dictionary<string, JsonElement>? customParams = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json, options);
+            if (customParams != null)
+            {
+                foreach (KeyValuePair<string, JsonElement> param in customParams)
+                {
+                    requestBody[param.Key] = param.Value;
+                }
+            }
+        }
+        catch
+        {
+            // Ignore invalid JSON
+        }
     }
 
     // Response models for translation APIs

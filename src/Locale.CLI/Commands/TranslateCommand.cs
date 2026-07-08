@@ -115,6 +115,12 @@ public sealed class TranslateSettings : CommandSettings
     [CommandOption("--parallel")]
     [DefaultValue(1)]
     public int DegreeOfParallelism { get; set; } = 1;
+    /// <summary>
+    /// Gets or sets custom JSON parameters to include in the API request body.
+    /// </summary>
+    [Description("Custom JSON parameters to include in the API request body (e.g. '{\"temperature\": 0.5, \"max_tokens\": 100}').")]
+    [CommandOption("--custom-params")]
+    public string? CustomParameters { get; set; }
 }
 
 /// <summary>
@@ -175,7 +181,8 @@ public sealed class TranslateCommand : AsyncCommand<TranslateSettings>
             Recursive = settings.Recursive,
             DelayBetweenCalls = settings.Delay,
             Model = settings.Model,
-            DegreeOfParallelism = settings.DegreeOfParallelism
+            DegreeOfParallelism = settings.DegreeOfParallelism,
+            CustomParameters = settings.CustomParameters
         };
 
         AnsiConsole.MarkupLine($"[bold]Translating[/] from [cyan]{sourceLanguage}[/] to [cyan]{settings.Target}[/]");

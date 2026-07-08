@@ -128,4 +128,102 @@ public class TranslateServiceTests
             Directory.Delete(tempDir, true);
         }
     }
+
+    [Fact]
+    public void TranslateOptions_CustomParameters_DefaultsToNull()
+    {
+        TranslateOptions options = new()
+        {
+            SourceLanguage = "en",
+            TargetLanguage = "tr"
+        };
+
+        Assert.Null(options.CustomParameters);
+    }
+
+    [Fact]
+    public void TranslateOptions_CustomParameters_IsConfigurable()
+    {
+        TranslateOptions options = new()
+        {
+            SourceLanguage = "de",
+            TargetLanguage = "en",
+            CustomParameters = "{\"temperature\": 0.5}"
+        };
+
+        Assert.Equal("{\"temperature\": 0.5}", options.CustomParameters);
+    }
+
+    [Fact]
+    public void ApplyCustomParameters_WithValidJson_AppliesParameters()
+    {
+        Dictionary<string, object> requestBody = new()
+        {
+            ["existing"] = "value"
+        };
+        string customParams = "{\"temperature\": 0.7, \"max_tokens\": 1500}";
+
+        TranslateService.ApplyCustomParameters(requestBody, customParams);
+
+        Assert.Equal(3, requestBody.Count);
+        Assert.Equal("value", requestBody["existing"]);
+        Assert.True(requestBody.ContainsKey("temperature"));
+        Assert.True(requestBody.ContainsKey("max_tokens"));
+    }
+
+    [Fact]
+    public void ApplyCustomParameters_WithSingleQuotes_AppliesParameters()
+    {
+        Dictionary<string, object> requestBody = [];
+        // CLI often strips double quotes and leaves single quotes if users type: --custom-params "{'temperature': 0.8}"
+        string customParams = "{'temperature': 0.8, 'model': 'gpt-4'}";
+
+        TranslateService.ApplyCustomParameters(requestBody, customParams);
+
+        Assert.Equal(2, requestBody.Count);
+        Assert.True(requestBody.ContainsKey("temperature"));
+        Assert.True(requestBody.ContainsKey("model"));
+    }
+
+    [Fact]
+    public void ApplyCustomParameters_WithTrailingCommas_AppliesParameters()
+    {
+        Dictionary<string, object> requestBody = [];
+        string customParams = "{\"temperature\": 0.9, }";
+
+        TranslateService.ApplyCustomParameters(requestBody, customParams);
+
+        Assert.Single(requestBody);
+        Assert.True(requestBody.ContainsKey("temperature"));
+    }
+
+    [Fact]
+    public void ApplyCustomParameters_WithInvalidJson_DoesNotThrowAndDoesNotApply()
+    {
+        Dictionary<string, object> requestBody = new()
+        {
+            ["existing"] = "value"
+        };
+        string customParams = "{ invalid json ;;; }";
+
+        TranslateService.ApplyCustomParameters(requestBody, customParams);
+
+        Assert.Single(requestBody);
+        Assert.Equal("value", requestBody["existing"]);
+    }
+
+    [Fact]
+    public void ApplyCustomParameters_WithNullOrEmpty_DoesNothing()
+    {
+        Dictionary<string, object> requestBody = new()
+        {
+            ["existing"] = "value"
+        };
+
+        TranslateService.ApplyCustomParameters(requestBody, null);
+        Assert.Single(requestBody);
+
+        TranslateService.ApplyCustomParameters(requestBody, "   ");
+        Assert.Single(requestBody);
+    }
 }
