@@ -1,6 +1,6 @@
 {
   "name": "@taiizor/locale-cli",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Cross-platform CLI tool for multi-format localization management with auto-translation support.",
   "keywords": [
     "locale",
@@ -24,7 +24,8 @@
     "chatgpt",
     "claude",
     "gemini",
-    "ollama"
+    "ollama",
+    "nvidia"
   ],
   "homepage": "https://github.com/Taiizor/Locale#readme",
   "bugs": {
