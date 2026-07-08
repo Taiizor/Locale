@@ -171,6 +171,9 @@ locale translate tr --from en --in ./locales --provider openai --api-key YOUR_KE
 # Local LLM with Ollama
 locale translate tr --from en --in ./locales --provider ollama --model llama3.3
 
+# Custom JSON parameters for AI providers
+locale translate tr --from en --in ./locales --provider openai --custom-params "{'temperature': 0.8, 'max_tokens': 2000}"
+
 # Parallel translation (5 concurrent requests with 500ms delay)
 locale translate tr --from en --in ./locales --parallel 5 --delay 500
 
@@ -309,10 +312,11 @@ generateService.Generate("./locales", "./locales", new GenerateOptions
 var translateService = new TranslateService();
 await translateService.TranslateAsync("./locales", new TranslateOptions
 {
-    SourceCulture = "en",
-    TargetCulture = "tr",
-    Provider = "openai",
-    ApiKey = "your-api-key"
+    SourceLanguage = "en",
+    TargetLanguage = "tr",
+    Provider = TranslationProvider.OpenAI,
+    ApiKey = "your-api-key",
+    CustomParameters = "{'temperature': 0.8}"
 });
 
 // 📂 Parse specific formats

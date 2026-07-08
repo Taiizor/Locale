@@ -538,6 +538,7 @@ public sealed class TranslateOptions
     public bool Recursive { get; set; } = true;
     public int DelayBetweenCalls { get; set; } = 100;
     public string? Model { get; set; }
+    public string? CustomParameters { get; set; }
     public int DegreeOfParallelism { get; set; } = 1;
 }
 ```

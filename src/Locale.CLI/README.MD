@@ -79,6 +79,9 @@ locale translate tr --from en --in ./locales --provider deepl --api-key KEY
 locale translate tr --from en --in ./locales --provider openai --api-key KEY
 locale translate tr --from en --in ./locales --provider claude --api-key KEY
 locale translate tr --from en --in ./locales --provider gemini --api-key KEY
+
+# Custom JSON parameters for AI providers
+locale translate tr --from en --in ./locales --provider openai --custom-params "{'temperature': 0.8, 'max_tokens': 2000}"
 ```
 
 | Provider | API Key | Default Model |
