@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <!-- General project properties -->
     <PropertyGroup>
@@ -26,7 +26,7 @@
         <Product>Locale.CLI</Product>
         <Copyright>Copyright © $([System.DateTime]::Today.ToString(yyyy)) $(Authors)</Copyright>
         <Summary>Cross-platform CLI tool for multi-format localization management with auto-translation support.</Summary>
-        <Description>Locale.CLI is a powerful cross-platform command-line tool for managing localization files. Features include: scan (detect missing/orphan keys), diff (compare files), check (validate rules), convert (transform formats), generate (create skeleton files), watch (monitor changes), and translate (auto-translate using Google, DeepL, Bing, Yandex, LibreTranslate, OpenAI, Claude, Gemini, Azure OpenAI, or Ollama).</Description>
+        <Description>Locale.CLI is a powerful cross-platform command-line tool for managing localization files. Features include: scan (detect missing/orphan keys), diff (compare files), check (validate rules), convert (transform formats), generate (create skeleton files), watch (monitor changes), and translate (auto-translate using Google, DeepL, Bing, Yandex, LibreTranslate, OpenAI, Claude, Gemini, Azure OpenAI, Ollama, or Nvidia).</Description>
         <PackageReadmeFile>README.MD</PackageReadmeFile>
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <PackageLicenseExpression></PackageLicenseExpression>

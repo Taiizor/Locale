@@ -647,6 +647,7 @@ service.Watch("./locales", new WatchOptions
 | Gemini | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | Azure OpenAI | ✅ Yes | - | Enterprise deployments |
 | Ollama | ❌ No | `llama3.3` | Local, private LLM |
+| Nvidia | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
 
 ### Provider Configuration
 
@@ -705,6 +706,18 @@ var options = new TranslateOptions
     Model = "llama3.3", // or any installed model
     SourceLanguage = "en",
     TargetLanguage = "it"
+};
+```
+
+**Nvidia (NIM API):**
+```csharp
+var options = new TranslateOptions
+{
+    Provider = TranslationProvider.Nvidia,
+    ApiKey = "your-nvidia-api-key",
+    Model = "meta/llama-3.3-70b-instruct", // or any NIM model
+    SourceLanguage = "en",
+    TargetLanguage = "tr"
 };
 ```
 

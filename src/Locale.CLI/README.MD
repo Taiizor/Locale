@@ -93,6 +93,7 @@ locale translate tr --from en --in ./locales --provider gemini --api-key KEY
 | Gemini | ✅ | gemini-2.5-flash |
 | Azure OpenAI | ✅ | - |
 | Ollama | ❌ | llama3.3 |
+| Nvidia | ✅ | meta/llama-3.3-70b-instruct |
 
 ## 📁 Supported Formats
 

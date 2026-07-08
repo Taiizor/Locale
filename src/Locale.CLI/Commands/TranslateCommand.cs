@@ -48,9 +48,9 @@ public sealed class TranslateSettings : CommandSettings
     public string? OutputPath { get; set; }
 
     /// <summary>
-    /// Gets or sets the translation provider: google, deepl, bing, yandex, libretranslate, openai, claude, gemini, azure-openai, ollama.
+    /// Gets or sets the translation provider: google, deepl, bing, yandex, libretranslate, openai, claude, gemini, azure-openai, ollama, nvidia.
     /// </summary>
-    [Description("Translation provider: google, deepl, bing, yandex, libretranslate, openai, claude, gemini, azure-openai, ollama.")]
+    [Description("Translation provider: google, deepl, bing, yandex, libretranslate, openai, claude, gemini, azure-openai, ollama, nvidia.")]
     [CommandOption("-p|--provider")]
     [DefaultValue("google")]
     public string Provider { get; set; } = "google";
@@ -120,7 +120,7 @@ public sealed class TranslateSettings : CommandSettings
 /// <summary>
 /// CLI command for automatically translating localization files using external APIs.
 /// Supports traditional translation services (Google, DeepL, Bing, Yandex, LibreTranslate)
-/// and AI-powered providers (OpenAI, Claude, Gemini, Azure OpenAI, Ollama).
+/// and AI-powered providers (OpenAI, Claude, Gemini, Azure OpenAI, Ollama, Nvidia).
 /// </summary>
 public sealed class TranslateCommand : AsyncCommand<TranslateSettings>
 {
@@ -292,6 +292,7 @@ public sealed class TranslateCommand : AsyncCommand<TranslateSettings>
             "gemini" or "google-ai" => TranslationProvider.Gemini,
             "azure-openai" or "azure" or "azureopenai" => TranslationProvider.AzureOpenAI,
             "ollama" or "local" => TranslationProvider.Ollama,
+            "nvidia" or "nvidia-nim" or "nvidia-build" => TranslationProvider.Nvidia,
             _ => TranslationProvider.Google
         };
     }

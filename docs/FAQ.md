@@ -280,6 +280,7 @@ Basic support:
 - **Google Gemini** (API key required)
 - **Azure OpenAI** (API key required)
 - **Ollama** (local LLM, no API key)
+- **Nvidia** (API key required, NIM models)
 
 ### How do I get API keys?
 
@@ -289,6 +290,7 @@ Basic support:
 - **Gemini:** https://makersuite.google.com/app/apikey
 - **Bing:** https://azure.microsoft.com/services/cognitive-services/translator/
 - **Yandex:** https://tech.yandex.com/translate/
+- **Nvidia:** https://build.nvidia.com/
 
 ### Which provider should I use?
 
@@ -303,6 +305,7 @@ Basic support:
 **For speed:**
 - **Gemini Flash:** Fast AI model
 - **OpenAI GPT-4o-mini:** Fast and cost-effective
+- **Nvidia NIM:** High throughput inference
 - **Ollama:** Fastest (local, no network latency)
 
 **For privacy:**
@@ -321,6 +324,7 @@ Basic support:
 - DeepL: ~$20
 - Claude: ~$3-15 (depending on model)
 - Gemini: ~$0.50-7 (depending on model)
+- Nvidia: Free credits available, pay-as-you-go after
 
 ### How do I translate only missing keys?
 
@@ -413,6 +417,7 @@ Or use Locale programmatically and implement translation yourself.
 **Translation performance:**
 - Google Translate: ~1 key/second
 - OpenAI (parallel): ~5-10 keys/second
+- Nvidia (parallel): ~10-20 keys/second
 - Ollama (local): ~20-50 keys/second
 
 ### How can I improve performance?

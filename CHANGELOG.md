@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Multi-format localization library supporting 11 different formats (JSON, YAML, RESX, PO, XLIFF, SRT, VTT, CSV, i18next, Fluent FTL, VB)
 - CLI tool with 7 commands: scan, diff, check, convert, generate, watch, translate
-- Auto-translation support for 10 providers (Google, DeepL, Bing, Yandex, LibreTranslate, OpenAI, Claude, Gemini, Azure OpenAI, Ollama)
+- Auto-translation support for 11 providers (Google, DeepL, Bing, Yandex, LibreTranslate, OpenAI, Claude, Gemini, Azure OpenAI, Ollama, Nvidia)
 - Cross-platform distribution via NuGet (.NET tool) and npm package
 - Comprehensive test suite with 113 tests covering all formats and services
 - CI/CD pipeline with multi-platform builds (Ubuntu, Windows, macOS)

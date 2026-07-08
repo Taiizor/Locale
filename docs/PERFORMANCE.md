@@ -248,6 +248,13 @@ DegreeOfParallelism = Environment.ProcessorCount,
 DelayBetweenCalls = 0
 ```
 
+**Nvidia (NIM API):**
+```csharp
+// High throughput parallelism
+DegreeOfParallelism = 10,
+DelayBetweenCalls = 50
+```
+
 ### Caching Translations
 
 ```csharp

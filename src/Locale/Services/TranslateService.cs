@@ -31,7 +31,9 @@ public enum TranslationProvider
     /// <summary>Azure OpenAI Service</summary>
     AzureOpenAI,
     /// <summary>Ollama (local LLM)</summary>
-    Ollama
+    Ollama,
+    /// <summary>Nvidia NIM API</summary>
+    Nvidia
 }
 
 /// <summary>
@@ -483,6 +485,7 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
             TranslationProvider.Gemini => await TranslateWithGeminiAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
             TranslationProvider.AzureOpenAI => await TranslateWithAzureOpenAIAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.ApiEndpoint, options.Model, cancellationToken),
             TranslationProvider.Ollama => await TranslateWithOllamaAsync(text, sourceLanguage, targetLanguage, options.ApiEndpoint, options.Model, cancellationToken),
+            TranslationProvider.Nvidia => await TranslateWithNvidiaAsync(text, sourceLanguage, targetLanguage, options.ApiKey, options.Model, cancellationToken),
             _ => throw new NotSupportedException($"Translation provider not supported: {options.Provider}")
         };
     }
@@ -771,7 +774,41 @@ public sealed class TranslateService(FormatRegistry registry) : IDisposable
         return json?.Response?.Trim() ?? text;
     }
 
+    private async Task<string> TranslateWithNvidiaAsync(string text, string sourceLang, string targetLang, string? apiKey, string? model, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            throw new InvalidOperationException("Nvidia API key is required");
+        }
 
+        string url = "https://integrate.api.nvidia.com/v1/chat/completions";
+        // Defaulting to llama-3.3-70b-instruct as a strong general model if none specified
+        string modelName = string.IsNullOrEmpty(model) ? "llama-3.3-70b-instruct" : model;
+
+        using HttpRequestMessage request = new(HttpMethod.Post, url);
+        request.Headers.Add("Authorization", $"Bearer {apiKey}");
+
+        var requestBody = new
+        {
+            model = modelName,
+            messages = new[]
+            {
+                new { role = "system", content = $"You are a professional translator. Translate the following text from {sourceLang} to {targetLang}. Only provide the translation, no explanations or additional text." },
+                new { role = "user", content = text }
+            },
+            temperature = 0.3,
+            max_tokens = 4096
+        };
+
+        request.Content = JsonContent.Create(requestBody);
+
+        HttpResponseMessage response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+
+        // Nvidia NIM API responses are OpenAI-compatible, so we can reuse OpenAIResponse
+        OpenAIResponse? json = await response.Content.ReadFromJsonAsync<OpenAIResponse>(cancellationToken: cancellationToken);
+        return json?.Choices?.FirstOrDefault()?.Message?.Content?.Trim() ?? text;
+    }
 
     /// <summary>
     /// Releases all resources used by the <see cref="TranslateService"/>.

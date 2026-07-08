@@ -36,7 +36,7 @@
 | 🔄 **Convert** | Transform between 11 different localization formats |
 | 📝 **Generate** | Create skeleton target files from a base language |
 | 👁️ **Watch** | File system watcher that auto-runs scan/check on changes |
-| 🌐 **Translate** | Auto-translate using 10 providers including AI (ChatGPT, Claude, Gemini) |
+| 🌐 **Translate** | Auto-translate using 11 providers including AI (ChatGPT, Claude, Gemini, Nvidia) |
 
 ## 📦 Installation
 
@@ -236,6 +236,7 @@ When `--base` is set and `--from` is omitted, `--from` defaults to the value of
 | ✨ **Gemini** | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | ☁️ **Azure OpenAI** | ✅ Yes | - | Enterprise deployments |
 | 🦙 **Ollama** | ❌ No | `llama3.3` | Local, private LLM |
+| 🟩 **Nvidia** | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
 
 ## 📁 Supported Formats
 

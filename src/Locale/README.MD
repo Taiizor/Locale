@@ -95,6 +95,7 @@ generateService.Generate("./locales", "./locales", new GenerateOptions
 | Gemini | ✅ | gemini-2.5-flash |
 | Azure OpenAI | ✅ | - |
 | Ollama | ❌ | llama3.3 |
+| Nvidia | ✅ | meta/llama-3.3-70b-instruct |
 
 ## 📖 Documentation
 
