@@ -168,7 +168,7 @@ value.
 | ✨ **Gemini** | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | ☁️ **Azure OpenAI** | ✅ Yes | - | Enterprise deployments |
 | 🦙 **Ollama** | ❌ No | `llama3.3` | Local, private LLM |
-| 🟩 **Nvidia** | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
+| 👁️ **Nvidia** | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
 
 ## 🔧 Alternative Installation
 

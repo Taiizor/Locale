@@ -236,7 +236,7 @@ When `--base` is set and `--from` is omitted, `--from` defaults to the value of
 | ✨ **Gemini** | ✅ Yes | `gemini-2.5-flash` | Fast AI translations |
 | ☁️ **Azure OpenAI** | ✅ Yes | - | Enterprise deployments |
 | 🦙 **Ollama** | ❌ No | `llama3.3` | Local, private LLM |
-| 🟩 **Nvidia** | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
+| 👁️ **Nvidia** | ✅ Yes | `meta/llama-3.3-70b-instruct` | Nvidia NIM models |
 
 ## 📁 Supported Formats
 
