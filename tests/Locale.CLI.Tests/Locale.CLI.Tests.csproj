@@ -11,12 +11,12 @@
 
     <ItemGroup>
         <PackageReference Include="xunit.v3" Version="4.0.0-pre.154" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.7.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="4.0.0-pre.4">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.3.0" />
+        <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" Version="2.3.3" />
         <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.9.0" />
     </ItemGroup>
 

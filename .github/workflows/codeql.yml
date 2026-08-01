@@ -39,13 +39,13 @@ jobs:
           fetch-depth: 0
 
       - name: 🔧 Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '11.0.x'
           dotnet-quality: 'preview'
 
       - name: 🔍 Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v4.37.3
         with:
           languages: csharp
           queries: security-and-quality
@@ -54,6 +54,6 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: 🔬 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v4.37.3
         with:
           category: "/language:csharp"
