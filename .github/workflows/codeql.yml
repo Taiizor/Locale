@@ -45,7 +45,7 @@ jobs:
           dotnet-quality: 'preview'
 
       - name: 🔍 Initialize CodeQL
-        uses: github/codeql-action/init@v4.37.3
+        uses: github/codeql-action/init@v4.37.9
         with:
           languages: csharp
           queries: security-and-quality
@@ -54,6 +54,6 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: 🔬 Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4.37.3
+        uses: github/codeql-action/analyze@v4.37.9
         with:
           category: "/language:csharp"
